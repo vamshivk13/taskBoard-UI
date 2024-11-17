@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./routes/login";
+import Login from "./routes/Login";
 import TaskBoard from "./routes/TaskBoard";
 import AuthContextProvider from "./context/AuthContextProvider";
 import Header from "./components/Header";
