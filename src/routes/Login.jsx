@@ -18,8 +18,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isNewUser, setIsNewUser] = useState(true);
-  const registerUrl = "http://localhost:3000/user/register";
-  const loginUrl = "http://localhost:3000/user/login";
+  const registerUrl =
+    "https://task-board-backend-cbnz.onrender.com/user/register";
+  const loginUrl = "https://task-board-backend-cbnz.onrender.com/user/login";
 
   const navigate = useNavigate();
 
@@ -64,7 +65,8 @@ const Login = () => {
   }
 
   function handleGoogleAuthentication() {
-    window.location.href = "http://localhost:3000/user/auth";
+    window.location.href =
+      "https://task-board-backend-cbnz.onrender.comuser/auth";
   }
 
   return (

@@ -18,8 +18,10 @@ import axios from "axios";
 const Task = ({ task, isTaskNameEditMode, setIsTaskNameEditMode }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTask, setNewTask] = useState("");
-  const createNewTaskUrl = "http://localhost:3000/task/create/task";
-  const updateNewTaskUrl = "http://localhost:3000/task/update/list";
+  const createNewTaskUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/create/task";
+  const updateNewTaskUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/update/list";
 
   const { setTasks } = useContext(taskContext);
   async function handleAddingNewTask() {

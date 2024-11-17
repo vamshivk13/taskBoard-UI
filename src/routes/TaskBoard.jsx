@@ -24,9 +24,11 @@ const TaskBoard = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isTaskNameEditMode, setIsTaskNameEditMode] = useState(false);
   const { tasks, setTasks } = useContext(taskContext);
-  const listsUrl = "http://localhost:3000/task/lists";
-  const updateTasksListUrl = "http://localhost:3000/task//update/task";
-  const deleteTaskUrl = "http://localhost:3000/task/delete";
+  const listsUrl = "https://task-board-backend-cbnz.onrender.com/task/lists";
+  const updateTasksListUrl =
+    "https://task-board-backend-cbnz.onrender.com/task//update/task";
+  const deleteTaskUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/delete";
   const navigate = useNavigate();
 
   async function fetchSavedLists(userId) {

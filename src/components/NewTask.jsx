@@ -19,7 +19,8 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
   const [listName, setListName] = useState("");
   const { setTasks } = useContext(taskContext);
   const { user } = useContext(authContext);
-  const createTaskListUrl = "http://localhost:3000/task/create/list";
+  const createTaskListUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/create/list";
 
   async function handleAddingNewTaskList() {
     const newTaskList = {

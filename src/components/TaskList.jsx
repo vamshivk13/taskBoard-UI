@@ -18,8 +18,10 @@ const TaskList = ({ tasks, tasksListId }) => {
   const { setTasks } = useContext(taskContext);
   const [updatedValue, setUpdatedValue] = useState("");
   const [currentTask, setCurrentTask] = useState(null);
-  const deleteTaskUrl = "http://localhost:3000/task/delete";
-  const updateTaskUrl = "http://localhost:3000/task/update";
+  const deleteTaskUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/delete";
+  const updateTaskUrl =
+    "https://task-board-backend-cbnz.onrender.com/task/update";
   function handleSelectedTask(id) {
     const currentTask = tasks.filter((task) => task.id == id);
     setCurrentTask(currentTask[0]);
