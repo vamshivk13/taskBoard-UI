@@ -54,6 +54,7 @@ const TaskBoard = () => {
     } else if (googleUser) {
       console.log(googleUser);
       setIsAuthenticated(true);
+      window.history.replaceState({}, document.title, "/");
       const userDetails = JSON.parse(googleUser);
       console.log("googleuser", googleUser, userDetails);
       setUser(googleUser);
@@ -154,10 +155,7 @@ const TaskBoard = () => {
           overflow: "hidden",
           backgroundColor: "#EBEAFF",
         }}
-        onClick={(e) => {
-          // setIsEditMode(false);
-          // setIsTaskEditMode(false);
-        }}
+        onClick={(e) => {}}
       >
         <Header />
         <Box
@@ -182,7 +180,7 @@ const TaskBoard = () => {
               );
             })}
           </DragDropContext>
-          <NewTask isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
+          <NewTask />
           <ErrorModal />
         </Box>
       </Box>

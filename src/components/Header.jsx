@@ -14,7 +14,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 
 const Header = () => {
-  const { user } = useContext(authContext);
+  const { user, setIsAuthenticated } = useContext(authContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
   const open = Boolean(anchorEl);
@@ -27,6 +27,7 @@ const Header = () => {
 
   function handleLogout() {
     Cookies.remove("user");
+    setIsAuthenticated(false);
     navigate("/login");
   }
   const mode = "dark";

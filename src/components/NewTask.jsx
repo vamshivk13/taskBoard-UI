@@ -14,15 +14,21 @@ import { v4 as uuid } from "uuid";
 import axios from "axios";
 import { authContext } from "../context/AuthContextProvider";
 import TaskList from "./TaskList";
+import { useErrorBoundary } from "./useErrorBoundary";
 
-const NewTask = ({ isEditMode, setIsEditMode }) => {
+const NewTask = () => {
+  const [isEditMode, setIsEditMode] = useState(false);
   const [listName, setListName] = useState("");
   const { setTasks } = useContext(taskContext);
   const { user } = useContext(authContext);
+  const { handleError, ErrorModal } = useErrorBoundary();
+
   const createTaskListUrl =
     "https://task-board-backend-cbnz.onrender.com/task/create/list";
 
   async function handleAddingNewTaskList() {
+    console.log("CLICKED");
+
     const newTaskList = {
       tasksListId: uuid(),
       userId: user.userId,
@@ -50,7 +56,6 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
     <Box
       sx={{
         minWidth: "400px",
-        zIndex: 10,
       }}
     >
       <Paper
@@ -66,15 +71,18 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
         }}
       >
         <Box
-          component={"div"}
+          component={"form"}
           sx={{
             display: "flex",
             padding: "10px 10px",
             alignItems: "center",
             cursor: "pointer",
-            zIndex: 10,
 
             // borderRadius: "10px",
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAddingNewTaskList();
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -87,26 +95,31 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
             <InputBase
               sx={{ color: "inherit", padding: 0 }}
               value={listName}
+              fullWidth
               autoFocus
               onChange={(e) => {
                 setListName(e.target.value);
               }}
-              onBlur={() => setIsEditMode(false)}
+              // onBlur={() => setIsEditMode(false)}
             />
           )}
 
           {isEditMode ? (
             <IconButton
+              type="submit"
               sx={{ marginLeft: "auto", padding: 0 }}
-              onClick={handleAddingNewTaskList}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
-              <AddIcon />
+              <AddIcon sx={{ color: "#ffffff" }} />
             </IconButton>
           ) : (
             <AddIcon sx={{ marginLeft: "auto" }} />
           )}
         </Box>
       </Paper>
+      <ErrorModal />
     </Box>
   );
 };
