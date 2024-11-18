@@ -13,11 +13,13 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
+import { useErrorBoundary } from "../components/useErrorBoundary";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isNewUser, setIsNewUser] = useState(true);
+  const [isNewUser, setIsNewUser] = useState(false);
+  const { handleError, ErrorModal } = useErrorBoundary();
   const registerUrl =
     "https://task-board-backend-cbnz.onrender.com/user/register";
   const loginUrl = "https://task-board-backend-cbnz.onrender.com/user/login";
@@ -44,29 +46,38 @@ const Login = () => {
           return;
         }
       } catch (err) {
+        handleError({
+          title: "Registration Error",
+          message: err.response.data,
+        });
         console.log("Registration error", err);
       }
     } else {
       // handle login
-      if (email && password) {
-        const user = await axios.post(loginUrl, {
-          email: email,
-          password: password,
-        });
-        if (user) {
-          Cookies.set("user", JSON.stringify(user.data));
-          navigate("/");
-        } else {
-          //handle validation
-          return;
+      try {
+        if (email && password) {
+          const user = await axios.post(loginUrl, {
+            email: email,
+            password: password,
+          });
+          if (user) {
+            Cookies.set("user", JSON.stringify(user.data));
+            navigate("/");
+          } else {
+            //handle validation
+            return;
+          }
         }
+      } catch (err) {
+        handleError({ title: "Login Error", message: err.response.data });
+        console.log("LOGIN ERROR", err);
       }
     }
   }
 
   function handleGoogleAuthentication() {
     window.location.href =
-      "https://task-board-backend-cbnz.onrender.comuser/auth";
+      "https://task-board-backend-cbnz.onrender.com/user/auth";
   }
 
   return (
@@ -156,6 +167,7 @@ const Login = () => {
           Continue with Google
         </Button>
       </Paper>
+      <ErrorModal />
     </Box>
   );
 };

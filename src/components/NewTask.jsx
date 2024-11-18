@@ -37,11 +37,15 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
     try {
       console.log("TSAKLIST", newTaskList, user);
       const res = await axios.post(createTaskListUrl, newTaskList);
+      handleError({
+        title: "Unable to save your tasks",
+        message: err.response.data,
+      });
     } catch (err) {
       console.log("Error saving list", err);
     }
   }
-
+  const mode = "dark";
   return (
     <Box
       sx={{
@@ -49,7 +53,18 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
         zIndex: 10,
       }}
     >
-      <Paper>
+      <Paper
+        sx={{
+          overflow: "hidden",
+          backgroundColor: mode === "dark" ? "#1e1e1e" : "#ffffff",
+          color: mode === "dark" ? "#ffffff" : "#000000",
+          boxShadow:
+            mode === "dark"
+              ? "0px 4px 10px rgba(0, 0, 0, 0.5)"
+              : "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          border: mode === "dark" ? "1px solid #333" : "1px solid #ddd",
+        }}
+      >
         <Box
           component={"div"}
           sx={{
@@ -58,6 +73,8 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
             alignItems: "center",
             cursor: "pointer",
             zIndex: 10,
+
+            // borderRadius: "10px",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -68,17 +85,19 @@ const NewTask = ({ isEditMode, setIsEditMode }) => {
             <Typography>Add a new list</Typography>
           ) : (
             <InputBase
+              sx={{ color: "inherit", padding: 0 }}
               value={listName}
               autoFocus
               onChange={(e) => {
                 setListName(e.target.value);
               }}
+              onBlur={() => setIsEditMode(false)}
             />
           )}
 
           {isEditMode ? (
             <IconButton
-              sx={{ marginLeft: "auto" }}
+              sx={{ marginLeft: "auto", padding: 0 }}
               onClick={handleAddingNewTaskList}
             >
               <AddIcon />

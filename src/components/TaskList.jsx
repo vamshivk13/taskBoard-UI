@@ -14,7 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const TaskList = ({ tasks, tasksListId }) => {
-  const [isEditMode, setIsEditMode] = useState(null);
+  const [isTaskEditMode, setIsTaskEditMode] = useState(null);
   const { setTasks } = useContext(taskContext);
   const [updatedValue, setUpdatedValue] = useState("");
   const [currentTask, setCurrentTask] = useState(null);
@@ -26,7 +26,7 @@ const TaskList = ({ tasks, tasksListId }) => {
     const currentTask = tasks.filter((task) => task.id == id);
     setCurrentTask(currentTask[0]);
     setUpdatedValue(currentTask[0].task);
-    setIsEditMode(id);
+    setIsTaskEditMode(id);
   }
 
   function handleUpdateTask(type) {
@@ -52,13 +52,17 @@ const TaskList = ({ tasks, tasksListId }) => {
           }
         });
       });
-      setIsEditMode(null);
+      setIsTaskEditMode(null);
       try {
         axios.post(updateTaskUrl, {
           tasksListId: tasksListId,
           task: { ...currentTask, task: updatedValue },
         });
       } catch (err) {
+        handleError({
+          title: "Unable to update your tasks",
+          message: err.response.data,
+        });
         console.log("Error updating the task", err);
       }
       setUpdatedValue("");
@@ -77,13 +81,17 @@ const TaskList = ({ tasks, tasksListId }) => {
           }
         });
       });
-      setIsEditMode(null);
+      setIsTaskEditMode(null);
       try {
         axios.post(deleteTaskUrl, {
           tasksListId: tasksListId,
           task: { ...currentTask },
         });
       } catch (err) {
+        handleError({
+          title: "Unable to update tasks",
+          message: err.response.data,
+        });
         console.log("Error updating the task", err);
       }
       setUpdatedValue("");
@@ -122,12 +130,16 @@ const TaskList = ({ tasks, tasksListId }) => {
                           key={task.id}
                         >
                           <ListItem sx={{}}>
-                            {isEditMode == task.id ? (
+                            {isTaskEditMode == task.id ? (
                               <Box
                                 sx={{
                                   display: "flex",
                                   alignItems: "center",
                                   width: "100%",
+                                }}
+                                component={"form"}
+                                onSubmit={() => {
+                                  handleUpdateTask("edit");
                                 }}
                               >
                                 <InputBase
@@ -137,13 +149,16 @@ const TaskList = ({ tasks, tasksListId }) => {
                                   onChange={(e) =>
                                     setUpdatedValue(e.target.value)
                                   }
+                                  onBlur={() => {
+                                    setIsTaskEditMode(null);
+                                  }}
                                 ></InputBase>
                                 <IconButton
                                   sx={{ marginLeft: "auto" }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleUpdateTask("edit");
                                   }}
+                                  type="submit"
                                 >
                                   <EditIcon />
                                 </IconButton>

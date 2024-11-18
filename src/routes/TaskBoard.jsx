@@ -19,22 +19,32 @@ import { taskContext } from "../context/TaskContextProvider";
 import Task from "../components/Task";
 import axios from "axios";
 import { DragDropContext } from "@hello-pangea/dnd";
+import { useErrorBoundary } from "../components/useErrorBoundary";
 const TaskBoard = () => {
   const { setIsAuthenticated, setUser, user } = useContext(authContext);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [isTaskNameEditMode, setIsTaskNameEditMode] = useState(false);
+
+  const [isTaskEditMode, setIsTaskEditMode] = useState(false);
   const { tasks, setTasks } = useContext(taskContext);
   const listsUrl = "https://task-board-backend-cbnz.onrender.com/task/lists";
   const updateTasksListUrl =
-    "https://task-board-backend-cbnz.onrender.com/task//update/task";
+    "https://task-board-backend-cbnz.onrender.com/task/update/task";
   const deleteTaskUrl =
     "https://task-board-backend-cbnz.onrender.com/task/delete";
   const navigate = useNavigate();
+  const { handleError, ErrorModal } = useErrorBoundary();
 
   async function fetchSavedLists(userId) {
-    console.log("USER DETAILS", user);
-    const lists = await axios.post(listsUrl, { userId: userId });
-    setTasks(lists.data);
+    try {
+      const lists = await axios.post(listsUrl, { userId: userId });
+      setTasks(lists.data);
+    } catch (err) {
+      handleError({
+        title: "Unable to load your tasks",
+        message: err.response.data,
+      });
+      console.log("Error while fetching tasks", err);
+    }
   }
 
   useEffect(() => {
@@ -77,6 +87,10 @@ const TaskBoard = () => {
           updatedTasks: updatedTasksList,
         });
       } catch (err) {
+        handleError({
+          title: "Task Card Update Error",
+          message: err.response.data,
+        });
         console.log("Error while saving tasks list after reordering");
       }
     } else {
@@ -84,7 +98,7 @@ const TaskBoard = () => {
       const toBeRemoved = tasks.filter(
         (curTaskList) => curTaskList.tasksListId == source.droppableId
       )[0].tasks[source.index];
-      console.log("REMOVED", toBeRemoved);
+
       setTasks((tasksList) => {
         return tasksList.map((curTaskList) => {
           if (curTaskList.tasksListId == source.droppableId) {
@@ -117,6 +131,10 @@ const TaskBoard = () => {
           task: toBeRemoved,
         });
       } catch (err) {
+        handleError({
+          title: "Task Card Update Error",
+          message: err.response.data,
+        });
         console.log("Error while saving tasks list after reordering");
       }
     }
@@ -129,9 +147,11 @@ const TaskBoard = () => {
         height: "100%",
         width: "100%",
         overflow: "hidden",
+        backgroundColor: "#EBEAFF",
       }}
       onClick={(e) => {
-        setIsEditMode(false);
+        // setIsEditMode(false);
+        // setIsTaskEditMode(false);
       }}
     >
       <Header />
@@ -149,15 +169,16 @@ const TaskBoard = () => {
           {tasks.map((task) => {
             return (
               <Task
-                isTaskNameEditMode={isTaskNameEditMode}
-                setIsTaskNameEditMode={setIsTaskNameEditMode}
                 task={task}
                 key={task.tasksListId}
+                setIsTaskEditMode={setIsTaskEditMode}
+                isTaskEditMode={isTaskEditMode}
               />
             );
           })}
         </DragDropContext>
         <NewTask isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
+        <ErrorModal />
       </Box>
     </Box>
   );
