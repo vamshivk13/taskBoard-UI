@@ -49,11 +49,21 @@ const TaskBoard = () => {
 
   useEffect(() => {
     const user = Cookies.get("user");
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleUser = urlParams.get("user");
+
     if (user) {
       console.log(user);
       setIsAuthenticated(true);
       const userDetails = JSON.parse(user);
       setUser(userDetails);
+      fetchSavedLists(userDetails.userId);
+    } else if (googleUser) {
+      console.log(googleUser);
+      setIsAuthenticated(true);
+      const userDetails = JSON.parse(googleUser);
+      console.log("googleuser", googleUser, userDetails);
+      setUser(googleUser);
       fetchSavedLists(userDetails.userId);
     } else {
       navigate("/login");
