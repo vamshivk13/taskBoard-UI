@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import {
   Box,
@@ -14,11 +14,13 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import { useErrorBoundary } from "../components/useErrorBoundary";
+import { authContext } from "../context/AuthContextProvider";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
+  const { isAuthenticated } = useContext(authContext);
   const { handleError, ErrorModal } = useErrorBoundary();
   const registerUrl =
     "https://task-board-backend-cbnz.onrender.com/user/register";
@@ -75,6 +77,11 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
   function handleGoogleAuthentication() {
     window.location.href =
       "https://task-board-backend-cbnz.onrender.com/user/auth";

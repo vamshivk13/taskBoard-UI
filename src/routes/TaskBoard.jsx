@@ -3,15 +3,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { authContext } from "../context/AuthContextProvider";
 import Cookies from "js-cookie";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  InputBase,
-  TextField,
-} from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import Header from "../components/Header";
 import NewTask from "../components/NewTask";
@@ -21,7 +13,8 @@ import axios from "axios";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 const TaskBoard = () => {
-  const { setIsAuthenticated, setUser, user } = useContext(authContext);
+  const { setIsAuthenticated, setUser, user, isAuthenticated } =
+    useContext(authContext);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isTaskEditMode, setIsTaskEditMode] = useState(false);
@@ -149,49 +142,51 @@ const TaskBoard = () => {
       }
     }
   }
-
-  return (
-    <Box
-      component={"div"}
-      sx={{
-        height: "100%",
-        width: "100%",
-        overflow: "hidden",
-        backgroundColor: "#EBEAFF",
-      }}
-      onClick={(e) => {
-        // setIsEditMode(false);
-        // setIsTaskEditMode(false);
-      }}
-    >
-      <Header />
+  if (!isAuthenticated) {
+    return <CircularProgress />;
+  } else
+    return (
       <Box
+        component={"div"}
         sx={{
-          display: "flex",
-          overflowY: "auto",
           height: "100%",
-          gap: "1rem",
-          padding: "1rem",
+          width: "100%",
+          overflow: "hidden",
+          backgroundColor: "#EBEAFF",
+        }}
+        onClick={(e) => {
+          // setIsEditMode(false);
+          // setIsTaskEditMode(false);
         }}
       >
-        {/* List of tasks to be rendered */}
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          {tasks.map((task) => {
-            return (
-              <Task
-                task={task}
-                key={task.tasksListId}
-                setIsTaskEditMode={setIsTaskEditMode}
-                isTaskEditMode={isTaskEditMode}
-              />
-            );
-          })}
-        </DragDropContext>
-        <NewTask isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
-        <ErrorModal />
+        <Header />
+        <Box
+          sx={{
+            display: "flex",
+            overflowY: "auto",
+            height: "100%",
+            gap: "1rem",
+            padding: "1rem",
+          }}
+        >
+          {/* List of tasks to be rendered */}
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            {tasks.map((task) => {
+              return (
+                <Task
+                  task={task}
+                  key={task.tasksListId}
+                  setIsTaskEditMode={setIsTaskEditMode}
+                  isTaskEditMode={isTaskEditMode}
+                />
+              );
+            })}
+          </DragDropContext>
+          <NewTask isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
+          <ErrorModal />
+        </Box>
       </Box>
-    </Box>
-  );
+    );
 };
 
 export default TaskBoard;

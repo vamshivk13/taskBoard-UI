@@ -54,7 +54,7 @@ const Header = () => {
             }}
           >
             <MenuItem onClick={handleClose}>{`Hi, ${
-              user?.email.split("@")[0] || "User"
+              user?.email?.split("@")[0] || "User"
             } !`}</MenuItem>
             <MenuItem
               onClick={() => {
