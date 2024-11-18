@@ -2,6 +2,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  IconButton,
   Menu,
   MenuItem,
   Toolbar,
