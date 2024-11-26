@@ -15,6 +15,8 @@ import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 import { authContext } from "../context/AuthContextProvider";
+import fetchRequest from "../api/api";
+import { LOGIN_URL } from "../constants/api";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,9 +24,6 @@ const Login = () => {
   const [isNewUser, setIsNewUser] = useState(false);
   const { isAuthenticated } = useContext(authContext);
   const { handleError, ErrorModal } = useErrorBoundary();
-  const registerUrl =
-    "https://task-board-backend-cbnz.onrender.com/user/register";
-  const loginUrl = "https://task-board-backend-cbnz.onrender.com/user/login";
 
   const navigate = useNavigate();
 
@@ -34,7 +33,7 @@ const Login = () => {
       //handle registration
       try {
         if (password == confirmPassword) {
-          const user = await axios.post(registerUrl, {
+          const user = await fetchRequest(REGISTER_URL, {
             name: "test",
             email: email,
             password,
@@ -58,7 +57,7 @@ const Login = () => {
       // handle login
       try {
         if (email && password) {
-          const user = await axios.post(loginUrl, {
+          const user = await fetchRequest(LOGIN_URL, {
             email: email,
             password: password,
           });

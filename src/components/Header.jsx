@@ -32,7 +32,7 @@ const Header = () => {
   }
   const mode = "dark";
   return (
-    <Box sx={{ flexGrow: 1 }} justifyContent={"center"}>
+    <Box sx={{ flexGrow: 1, height: "60px" }} justifyContent={"center"}>
       <AppBar
         position="static"
         sx={{

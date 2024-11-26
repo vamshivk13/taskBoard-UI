@@ -1,20 +1,12 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  InputBase,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, InputBase, Paper, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useContext, useState } from "react";
 import { taskContext } from "../context/TaskContextProvider";
 import { v4 as uuid } from "uuid";
-import axios from "axios";
+import fetchRequest from "../api/api";
 import { authContext } from "../context/AuthContextProvider";
-import TaskList from "./TaskList";
 import { useErrorBoundary } from "./useErrorBoundary";
+import { CREATE_TASK_LIST } from "../constants/api";
 
 const NewTask = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -23,12 +15,7 @@ const NewTask = () => {
   const { user } = useContext(authContext);
   const { handleError, ErrorModal } = useErrorBoundary();
 
-  const createTaskListUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/create/list";
-
   async function handleAddingNewTaskList() {
-    console.log("CLICKED");
-
     const newTaskList = {
       tasksListId: uuid(),
       userId: user.userId,
@@ -41,13 +28,12 @@ const NewTask = () => {
     setListName("");
     setIsEditMode(false);
     try {
-      console.log("TSAKLIST", newTaskList, user);
-      const res = await axios.post(createTaskListUrl, newTaskList);
+      const res = await fetchRequest(CREATE_TASK_LIST, newTaskList);
+    } catch (err) {
       handleError({
         title: "Unable to save your tasks",
         message: err.response.data,
       });
-    } catch (err) {
       console.log("Error saving list", err);
     }
   }

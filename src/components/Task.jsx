@@ -15,16 +15,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuid } from "uuid";
 import { taskContext } from "../context/TaskContextProvider";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import axios from "axios";
+import fetchRequest from "../api/api";
+import { CREATE_TASK, UPDATE_LIST } from "../constants/api";
 
 const Task = ({ task }) => {
   const [isTaskNameEditMode, setIsTaskNameEditMode] = useState(null);
   const [newTaskName, setNewTaskName] = useState("");
   const [newTask, setNewTask] = useState("");
-  const createNewTaskUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/create/task";
-  const updateNewTaskUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/update/list";
 
   const { setTasks } = useContext(taskContext);
   async function handleAddingNewTask(e) {
@@ -52,7 +49,7 @@ const Task = ({ task }) => {
     });
     setNewTask("");
     try {
-      const newSavedTask = await axios.post(createNewTaskUrl, {
+      const newSavedTask = await fetchRequest(CREATE_TASK, {
         task: newTaskToAdd,
         tasksListId: task.tasksListId,
       });
@@ -81,7 +78,7 @@ const Task = ({ task }) => {
       });
       setIsTaskNameEditMode(null);
       try {
-        const updatedSavedTask = await axios.post(updateNewTaskUrl, {
+        const updatedSavedTask = await fetchRequest(UPDATE_LIST, {
           taskName: newTaskName,
           tasksListId: task.tasksListId,
         });
@@ -126,12 +123,24 @@ const Task = ({ task }) => {
   });
 
   return (
-    <Box sx={{ minWidth: "400px" }}>
+    <Box
+      sx={{
+        minWidth: "400px",
+        height: "calc(100% - 50px)",
+        overflow: "auto",
+      }}
+    >
       <ThemeProvider theme={theme}>
         <Paper>
           <Card>
-            <CardContent sx={{ ":last-child": { paddingBottom: "5px" } }}>
+            <CardContent
+              sx={{
+                ":last-child": { paddingBottom: "5px" },
+                position: "relative",
+              }}
+            >
               <Box
+                sx={{ position: "sticky", top: "0" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsTaskNameEditMode(task.tasksListId);
@@ -184,7 +193,12 @@ const Task = ({ task }) => {
 
               <Box
                 component={"form"}
-                sx={{ display: "flex", alignItems: "center" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  position: "sticky",
+                  bottom: 0,
+                }}
                 onSubmit={handleAddingNewTask}
               >
                 <IconButton type="submit">

@@ -12,24 +12,24 @@ import Task from "../components/Task";
 import axios from "axios";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useErrorBoundary } from "../components/useErrorBoundary";
+import {
+  DELETE_TASK_URL,
+  LIST_ALLTASKS_UPDATE_URL,
+  LISTS_URL,
+} from "../constants/api";
+import fetchRequest from "../api/api";
 const TaskBoard = () => {
   const { setIsAuthenticated, setUser, user, isAuthenticated } =
     useContext(authContext);
-  const [isEditMode, setIsEditMode] = useState(false);
 
   const [isTaskEditMode, setIsTaskEditMode] = useState(false);
   const { tasks, setTasks } = useContext(taskContext);
-  const listsUrl = "https://task-board-backend-cbnz.onrender.com/task/lists";
-  const updateTasksListUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/update/task";
-  const deleteTaskUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/delete";
   const navigate = useNavigate();
   const { handleError, ErrorModal } = useErrorBoundary();
 
   async function fetchSavedLists(userId) {
     try {
-      const lists = await axios.post(listsUrl, { userId: userId });
+      const lists = await fetchRequest(LISTS_URL, { userId: userId });
       setTasks(lists.data);
     } catch (err) {
       handleError({
@@ -86,7 +86,7 @@ const TaskBoard = () => {
         });
       });
       try {
-        axios.post(updateTasksListUrl, {
+        axios.post(LIST_ALLTASKS_UPDATE_URL, {
           tasksListId: source.droppableId,
           updatedTasks: updatedTasksList,
         });
@@ -115,7 +115,7 @@ const TaskBoard = () => {
           } else if (curTaskList.tasksListId == destination.droppableId) {
             const curTasks = [...curTaskList.tasks];
             curTasks.splice(destination.index, 0, toBeRemoved);
-            axios.post(updateTasksListUrl, {
+            fetchRequest(LIST_ALLTASKS_UPDATE_URL, {
               tasksListId: destination.droppableId,
               updatedTasks: [...curTasks],
             });
@@ -130,7 +130,7 @@ const TaskBoard = () => {
       });
 
       try {
-        axios.post(deleteTaskUrl, {
+        fetchRequest(DELETE_TASK_URL, {
           tasksListId: source.droppableId,
           task: toBeRemoved,
         });
@@ -161,8 +161,7 @@ const TaskBoard = () => {
         <Box
           sx={{
             display: "flex",
-            overflowY: "auto",
-            height: "100%",
+            height: "calc(100% - 60px)",
             gap: "1rem",
             padding: "1rem",
           }}

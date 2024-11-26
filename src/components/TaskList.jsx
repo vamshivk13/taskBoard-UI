@@ -7,21 +7,18 @@ import {
   Paper,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import DoneIcon from "@mui/icons-material/Done";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { taskContext } from "../context/TaskContextProvider";
 import EditIcon from "@mui/icons-material/Edit";
-import axios from "axios";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { DELETE_TASK_URL, UPDATE_TASK } from "../constants/api";
+import fetchRequest from "../api/api";
 const TaskList = ({ tasks, tasksListId }) => {
   const [isTaskEditMode, setIsTaskEditMode] = useState(null);
   const { setTasks } = useContext(taskContext);
   const [updatedValue, setUpdatedValue] = useState("");
   const [currentTask, setCurrentTask] = useState(null);
-  const deleteTaskUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/delete";
-  const updateTaskUrl =
-    "https://task-board-backend-cbnz.onrender.com/task/update";
+
   function handleSelectedTask(id) {
     const currentTask = tasks.filter((task) => task.id == id);
     setCurrentTask(currentTask[0]);
@@ -31,7 +28,6 @@ const TaskList = ({ tasks, tasksListId }) => {
 
   function handleUpdateTask(type) {
     if (type == "edit") {
-      console.log("IN EDIT TASK");
       setTasks((tasksList) => {
         return tasksList.map((curTaskList) => {
           if (curTaskList.tasksListId == tasksListId) {
@@ -45,7 +41,6 @@ const TaskList = ({ tasks, tasksListId }) => {
                 return curTask;
               }
             });
-            console.log("UPDATED TASK", updatedTasks);
             return { ...curTaskList, tasks: [...updatedTasks] };
           } else {
             return curTaskList;
@@ -54,15 +49,15 @@ const TaskList = ({ tasks, tasksListId }) => {
       });
       setIsTaskEditMode(null);
       try {
-        axios.post(updateTaskUrl, {
+        fetchRequest(UPDATE_TASK, {
           tasksListId: tasksListId,
           task: { ...currentTask, task: updatedValue },
         });
       } catch (err) {
-        handleError({
-          title: "Unable to update your tasks",
-          message: err.response.data,
-        });
+        // handleError({
+        //   title: "Unable to update your tasks",
+        //   message: err.response.data,
+        // });
         console.log("Error updating the task", err);
       }
       setUpdatedValue("");
@@ -83,7 +78,7 @@ const TaskList = ({ tasks, tasksListId }) => {
       });
       setIsTaskEditMode(null);
       try {
-        axios.post(deleteTaskUrl, {
+        fetchRequest(DELETE_TASK_URL, {
           tasksListId: tasksListId,
           task: { ...currentTask },
         });
@@ -138,7 +133,8 @@ const TaskList = ({ tasks, tasksListId }) => {
                                   width: "100%",
                                 }}
                                 component={"form"}
-                                onSubmit={() => {
+                                onSubmit={(e) => {
+                                  e.preventDefault();
                                   handleUpdateTask("edit");
                                 }}
                               >
