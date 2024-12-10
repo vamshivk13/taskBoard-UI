@@ -162,6 +162,7 @@ const TaskBoard = () => {
           sx={{
             display: "flex",
             height: "calc(100% - 60px)",
+            overflowX: "auto",
             gap: "1rem",
             padding: "1rem",
           }}

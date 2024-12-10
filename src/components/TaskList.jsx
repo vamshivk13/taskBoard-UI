@@ -94,7 +94,7 @@ const TaskList = ({ tasks, tasksListId }) => {
   }
 
   return (
-    <List>
+    <List sx={{ padding: "0" }}>
       <Droppable key={tasksListId} droppableId={tasksListId}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>

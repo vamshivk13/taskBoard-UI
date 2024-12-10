@@ -127,93 +127,102 @@ const Task = ({ task }) => {
       sx={{
         minWidth: "400px",
         height: "calc(100% - 50px)",
-        overflow: "auto",
+        overflow: "hidden",
+        boxSizing: "border-box",
+        borderRadius: "5px",
       }}
     >
       <ThemeProvider theme={theme}>
-        <Paper>
-          <Card>
-            <CardContent
-              sx={{
-                ":last-child": { paddingBottom: "5px" },
-                position: "relative",
+        <Card
+          sx={{
+            height: "100%",
+          }}
+        >
+          <CardContent
+            sx={{
+              ":last-child": { paddingBottom: "5px" },
+              height: "100%",
+            }}
+          >
+            <Box
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsTaskNameEditMode(task.tasksListId);
+                setNewTaskName(task.taskName);
               }}
+              sx={{ height: "50px" }}
             >
-              <Box
-                sx={{ position: "sticky", top: "0" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsTaskNameEditMode(task.tasksListId);
-                  setNewTaskName(task.taskName);
-                }}
-              >
-                {isTaskNameEditMode == task.tasksListId ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
+              {isTaskNameEditMode == task.tasksListId ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  component={"form"}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleUpdatingTaskList("edit");
+                  }}
+                >
+                  <InputBase
+                    fullWidth
+                    sx={{ fontSize: "1.4rem", padding: 0 }}
+                    autoFocus
+                    onBlur={(e) => {
+                      setIsTaskNameEditMode(null);
                     }}
-                    component={"form"}
-                    onSubmit={(e) => {
-                      e.preventDefault();
+                    value={newTaskName}
+                    onChange={(e) => {
+                      setNewTaskName(e.target.value);
+                    }}
+                  />
+                  <IconButton
+                    sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
+                    type="submit"
+                    onClick={(e) => {
                       e.stopPropagation();
-                      handleUpdatingTaskList("edit");
                     }}
                   >
-                    <InputBase
-                      fullWidth
-                      sx={{ fontSize: "1.4rem", padding: 0 }}
-                      autoFocus
-                      onBlur={(e) => {
-                        setIsTaskNameEditMode(null);
-                      }}
-                      value={newTaskName}
-                      onChange={(e) => {
-                        setNewTaskName(e.target.value);
-                      }}
-                    />
-                    <IconButton
-                      sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
-                      type="submit"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <KeyboardArrowRightIcon />
-                    </IconButton>
-                  </Box>
-                ) : (
-                  <Typography sx={{ fontSize: "1.4rem", padding: 0 }}>
-                    {task.taskName}
-                  </Typography>
-                )}
-              </Box>
-
+                    <KeyboardArrowRightIcon />
+                  </IconButton>
+                </Box>
+              ) : (
+                <Typography sx={{ fontSize: "1.4rem", padding: 0 }}>
+                  {task.taskName}
+                </Typography>
+              )}
+            </Box>
+            <Box
+              sx={{
+                height: "calc(100% - 120px)",
+                overflow: "auto",
+              }}
+            >
               <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
-
-              <Box
-                component={"form"}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  position: "sticky",
-                  bottom: 0,
-                }}
-                onSubmit={handleAddingNewTask}
-              >
-                <IconButton type="submit">
-                  <AddIcon />
-                </IconButton>
-                <InputBase
-                  fullWidth
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="add new task"
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Paper>
+            </Box>
+            <Box
+              component={"form"}
+              sx={{
+                height: "50px",
+                display: "flex",
+                alignItems: "center",
+                bottom: 0,
+              }}
+              onSubmit={handleAddingNewTask}
+            >
+              <IconButton type="submit">
+                <AddIcon />
+              </IconButton>
+              <InputBase
+                fullWidth
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="add new task"
+              />
+            </Box>
+          </CardContent>
+        </Card>
       </ThemeProvider>
     </Box>
   );
