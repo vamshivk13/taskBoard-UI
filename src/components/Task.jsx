@@ -125,6 +125,7 @@ const Task = ({ task }) => {
   return (
     <Box
       sx={{
+        display: "block",
         minWidth: "400px",
         height: "calc(100% - 50px)",
         overflow: "hidden",
@@ -133,96 +134,103 @@ const Task = ({ task }) => {
       }}
     >
       <ThemeProvider theme={theme}>
-        <Card
-          sx={{
-            height: "100%",
-          }}
-        >
-          <CardContent
+        <Box sx={{ height: "100%" }}>
+          <Card
             sx={{
-              ":last-child": { paddingBottom: "5px" },
-              height: "100%",
+              display: "flex",
+              maxHeight: "100%",
             }}
           >
-            <Box
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsTaskNameEditMode(task.tasksListId);
-                setNewTaskName(task.taskName);
+            <CardContent
+              sx={{
+                ":last-child": { paddingBottom: "5px" },
+                flex: 1,
+                maxHeight: "100%",
+                display: "flex",
+                flexDirection: "column",
               }}
-              sx={{ height: "50px" }}
             >
-              {isTaskNameEditMode == task.tasksListId ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  component={"form"}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleUpdatingTaskList("edit");
-                  }}
-                >
-                  <InputBase
-                    fullWidth
-                    sx={{ fontSize: "1.4rem", padding: 0 }}
-                    autoFocus
-                    onBlur={(e) => {
-                      setIsTaskNameEditMode(null);
+              <Box
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTaskNameEditMode(task.tasksListId);
+                  setNewTaskName(task.taskName);
+                }}
+                sx={{ height: "50px" }}
+              >
+                {isTaskNameEditMode == task.tasksListId ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
                     }}
-                    value={newTaskName}
-                    onChange={(e) => {
-                      setNewTaskName(e.target.value);
-                    }}
-                  />
-                  <IconButton
-                    sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
-                    type="submit"
-                    onClick={(e) => {
+                    component={"form"}
+                    onSubmit={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
+                      handleUpdatingTaskList("edit");
                     }}
                   >
-                    <KeyboardArrowRightIcon />
-                  </IconButton>
-                </Box>
-              ) : (
-                <Typography sx={{ fontSize: "1.4rem", padding: 0 }}>
-                  {task.taskName}
-                </Typography>
-              )}
-            </Box>
-            <Box
+                    <InputBase
+                      fullWidth
+                      sx={{ fontSize: "1.4rem", padding: 0 }}
+                      autoFocus
+                      onBlur={(e) => {
+                        setIsTaskNameEditMode(null);
+                      }}
+                      value={newTaskName}
+                      onChange={(e) => {
+                        setNewTaskName(e.target.value);
+                      }}
+                    />
+                    <IconButton
+                      sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
+                      type="submit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <KeyboardArrowRightIcon />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <Typography sx={{ fontSize: "1.4rem", padding: 0 }}>
+                    {task.taskName}
+                  </Typography>
+                )}
+              </Box>
+              {/* <Box
               sx={{
-                height: "calc(100% - 120px)",
-                overflow: "auto",
+                maxHeight: "calc(100% - 120px)",
+                overflowY: "auto",
+                flexShrink: 0,
               }}
-            >
+            > */}
               <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
-            </Box>
-            <Box
-              component={"form"}
-              sx={{
-                height: "50px",
-                display: "flex",
-                alignItems: "center",
-                bottom: 0,
-              }}
-              onSubmit={handleAddingNewTask}
-            >
-              <IconButton type="submit">
-                <AddIcon />
-              </IconButton>
-              <InputBase
-                fullWidth
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                placeholder="add new task"
-              />
-            </Box>
-          </CardContent>
-        </Card>
+              {/* </Box> */}
+              <Box
+                component={"form"}
+                sx={{
+                  height: "50px",
+                  display: "flex",
+                  alignItems: "center",
+                  bottom: 0,
+                }}
+                onSubmit={handleAddingNewTask}
+              >
+                <IconButton type="submit">
+                  <AddIcon />
+                </IconButton>
+                <InputBase
+                  fullWidth
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  placeholder="add new task"
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
       </ThemeProvider>
     </Box>
   );

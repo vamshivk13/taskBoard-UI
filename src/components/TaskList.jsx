@@ -94,7 +94,15 @@ const TaskList = ({ tasks, tasksListId }) => {
   }
 
   return (
-    <List sx={{ padding: "0" }}>
+    <List
+      sx={{
+        padding: "0",
+        // maxHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto",
+      }}
+    >
       <Droppable key={tasksListId} droppableId={tasksListId}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
