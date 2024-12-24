@@ -16,7 +16,7 @@ import Cookies from "js-cookie";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 import { authContext } from "../context/AuthContextProvider";
 import fetchRequest from "../api/api";
-import { LOGIN_URL } from "../constants/api";
+import { LOGIN_URL, REGISTER_URL } from "../constants/api";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +29,7 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log("Reg", isNewUser);
     if (isNewUser) {
       //handle registration
       try {
@@ -47,10 +48,10 @@ const Login = () => {
           return;
         }
       } catch (err) {
-        handleError({
-          title: "Registration Error",
-          message: err.response.data,
-        });
+        // handleError({
+        //   title: "Registration Error",
+        //   message: err.response.data,
+        // });
         console.log("Registration error", err);
       }
     } else {
