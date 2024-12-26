@@ -48,10 +48,10 @@ const Login = () => {
           return;
         }
       } catch (err) {
-        // handleError({
-        //   title: "Registration Error",
-        //   message: err.response.data,
-        // });
+        handleError({
+          title: "Registration Error",
+          message: err.response.data,
+        });
         console.log("Registration error", err);
       }
     } else {

@@ -8,6 +8,7 @@ import {
   IconButton,
   InputBase,
   Paper,
+  TextField,
   ThemeProvider,
   Typography,
 } from "@mui/material";
@@ -126,11 +127,10 @@ const Task = ({ task }) => {
     <Box
       sx={{
         display: "block",
-        minWidth: "400px",
+        minWidth: "350px",
         height: "calc(100% - 50px)",
         overflow: "hidden",
         boxSizing: "border-box",
-        borderRadius: "5px",
       }}
     >
       <ThemeProvider theme={theme}>
@@ -139,6 +139,7 @@ const Task = ({ task }) => {
             sx={{
               display: "flex",
               maxHeight: "100%",
+              borderRadius: "14px",
             }}
           >
             <CardContent
@@ -147,6 +148,8 @@ const Task = ({ task }) => {
                 flex: 1,
                 maxHeight: "100%",
                 display: "flex",
+                padding: "12px",
+                paddingTop: "5px",
                 flexDirection: "column",
               }}
             >
@@ -156,13 +159,22 @@ const Task = ({ task }) => {
                   setIsTaskNameEditMode(task.tasksListId);
                   setNewTaskName(task.taskName);
                 }}
-                sx={{ height: "50px" }}
+                sx={{
+                  minHeight: "50px",
+                  // background: "red",
+                  marginBottom: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
                 {isTaskNameEditMode == task.tasksListId ? (
                   <Box
                     sx={{
                       display: "flex",
+                      flex: 1,
                       alignItems: "center",
+                      padding: "0",
+                      margin: 0,
                     }}
                     component={"form"}
                     onSubmit={(e) => {
@@ -173,7 +185,12 @@ const Task = ({ task }) => {
                   >
                     <InputBase
                       fullWidth
-                      sx={{ fontSize: "1.4rem", padding: 0 }}
+                      sx={{
+                        fontSize: "1.2rem",
+                        padding: "3px 5px",
+                        borderRadius: "5px",
+                        border: "1px solid #F0EAD6",
+                      }}
                       autoFocus
                       onBlur={(e) => {
                         setIsTaskNameEditMode(null);
@@ -194,20 +211,12 @@ const Task = ({ task }) => {
                     </IconButton>
                   </Box>
                 ) : (
-                  <Typography sx={{ fontSize: "1.4rem", padding: 0 }}>
+                  <Typography sx={{ fontSize: "1.2rem", padding: "3px 5px" }}>
                     {task.taskName}
                   </Typography>
                 )}
               </Box>
-              {/* <Box
-              sx={{
-                maxHeight: "calc(100% - 120px)",
-                overflowY: "auto",
-                flexShrink: 0,
-              }}
-            > */}
               <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
-              {/* </Box> */}
               <Box
                 component={"form"}
                 sx={{

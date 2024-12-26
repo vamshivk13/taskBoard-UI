@@ -115,9 +115,20 @@ const TaskBoard = () => {
           } else if (curTaskList.tasksListId == destination.droppableId) {
             const curTasks = [...curTaskList.tasks];
             curTasks.splice(destination.index, 0, toBeRemoved);
-            fetchRequest(LIST_ALLTASKS_UPDATE_URL, {
-              tasksListId: destination.droppableId,
-              updatedTasks: [...curTasks],
+            fetchRequest(DELETE_TASK_URL, {
+              tasksListId: source.droppableId,
+              task: toBeRemoved,
+            }).then((res) => {
+              fetchRequest(LIST_ALLTASKS_UPDATE_URL, {
+                tasksListId: destination.droppableId,
+                updatedTasks: [...curTasks],
+              }).catch((err) => {
+                console.log("ERROR MOVING TO DIFFFERENT LIST");
+                handleError({
+                  title: "Task Card Update Error",
+                  message: err.response.data,
+                });
+              });
             });
             return {
               ...curTaskList,
@@ -128,19 +139,6 @@ const TaskBoard = () => {
           }
         });
       });
-
-      try {
-        fetchRequest(DELETE_TASK_URL, {
-          tasksListId: source.droppableId,
-          task: toBeRemoved,
-        });
-      } catch (err) {
-        handleError({
-          title: "Task Card Update Error",
-          message: err.response.data,
-        });
-        console.log("Error while saving tasks list after reordering");
-      }
     }
   }
   if (!isAuthenticated) {
