@@ -93,35 +93,6 @@ const Task = ({ task }) => {
       setNewTaskName("");
     }
   }
-  const mode = "dark";
-  const theme = createTheme({
-    palette: {
-      mode,
-    },
-    components: {
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            padding: "!important 4px",
-            backgroundColor: mode === "dark" ? "#1e1e1e" : "#ffffff",
-            color: mode === "dark" ? "#ffffff" : "#000000",
-            boxShadow:
-              mode === "dark"
-                ? "0px 4px 10px rgba(0, 0, 0, 0.5)"
-                : "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            border: mode === "dark" ? "1px solid #333" : "1px solid #ddd",
-          },
-        },
-      },
-      MuiCardContent: {
-        styleOverrides: {
-          root: {
-            padding: "!important 6px", // Applies padding to CardContent
-          },
-        },
-      },
-    },
-  });
 
   return (
     <Box
@@ -133,114 +104,112 @@ const Task = ({ task }) => {
         boxSizing: "border-box",
       }}
     >
-      <ThemeProvider theme={theme}>
-        <Box sx={{ height: "100%" }}>
-          <Card
+      <Box sx={{ height: "100%" }}>
+        <Card
+          sx={{
+            display: "flex",
+            maxHeight: "100%",
+            borderRadius: "14px",
+          }}
+        >
+          <CardContent
             sx={{
-              display: "flex",
+              ":last-child": { paddingBottom: "5px" },
+              flex: 1,
               maxHeight: "100%",
-              borderRadius: "14px",
+              display: "flex",
+              padding: "12px",
+              paddingTop: "5px",
+              flexDirection: "column",
             }}
           >
-            <CardContent
+            <Box
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsTaskNameEditMode(task.tasksListId);
+                setNewTaskName(task.taskName);
+              }}
               sx={{
-                ":last-child": { paddingBottom: "5px" },
-                flex: 1,
-                maxHeight: "100%",
+                minHeight: "50px",
+                // background: "red",
+                marginBottom: "4px",
                 display: "flex",
-                padding: "12px",
-                paddingTop: "5px",
-                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              <Box
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsTaskNameEditMode(task.tasksListId);
-                  setNewTaskName(task.taskName);
-                }}
-                sx={{
-                  minHeight: "50px",
-                  // background: "red",
-                  marginBottom: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                {isTaskNameEditMode == task.tasksListId ? (
-                  <Box
+              {isTaskNameEditMode == task.tasksListId ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flex: 1,
+                    alignItems: "center",
+                    padding: "0",
+                    margin: 0,
+                  }}
+                  component={"form"}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleUpdatingTaskList("edit");
+                  }}
+                >
+                  <InputBase
+                    fullWidth
                     sx={{
-                      display: "flex",
-                      flex: 1,
-                      alignItems: "center",
-                      padding: "0",
-                      margin: 0,
+                      fontSize: "1.2rem",
+                      padding: "3px 5px",
+                      borderRadius: "5px",
+                      border: "1px solid #F0EAD6",
                     }}
-                    component={"form"}
-                    onSubmit={(e) => {
-                      e.preventDefault();
+                    autoFocus
+                    onBlur={(e) => {
+                      setIsTaskNameEditMode(null);
+                    }}
+                    value={newTaskName}
+                    onChange={(e) => {
+                      setNewTaskName(e.target.value);
+                    }}
+                  />
+                  <IconButton
+                    sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
+                    type="submit"
+                    onClick={(e) => {
                       e.stopPropagation();
-                      handleUpdatingTaskList("edit");
                     }}
                   >
-                    <InputBase
-                      fullWidth
-                      sx={{
-                        fontSize: "1.2rem",
-                        padding: "3px 5px",
-                        borderRadius: "5px",
-                        border: "1px solid #F0EAD6",
-                      }}
-                      autoFocus
-                      onBlur={(e) => {
-                        setIsTaskNameEditMode(null);
-                      }}
-                      value={newTaskName}
-                      onChange={(e) => {
-                        setNewTaskName(e.target.value);
-                      }}
-                    />
-                    <IconButton
-                      sx={{ marginLeft: "auto", padding: 0, margin: 0 }}
-                      type="submit"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <KeyboardArrowRightIcon />
-                    </IconButton>
-                  </Box>
-                ) : (
-                  <Typography sx={{ fontSize: "1.2rem", padding: "3px 5px" }}>
-                    {task.taskName}
-                  </Typography>
-                )}
-              </Box>
-              <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
-              <Box
-                component={"form"}
-                sx={{
-                  height: "50px",
-                  display: "flex",
-                  alignItems: "center",
-                  bottom: 0,
-                }}
-                onSubmit={handleAddingNewTask}
-              >
-                <IconButton type="submit">
-                  <AddIcon />
-                </IconButton>
-                <InputBase
-                  fullWidth
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  placeholder="add new task"
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      </ThemeProvider>
+                    <KeyboardArrowRightIcon />
+                  </IconButton>
+                </Box>
+              ) : (
+                <Typography sx={{ fontSize: "1.2rem", padding: "3px 5px" }}>
+                  {task.taskName}
+                </Typography>
+              )}
+            </Box>
+            <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
+            <Box
+              component={"form"}
+              sx={{
+                height: "50px",
+                display: "flex",
+                alignItems: "center",
+                bottom: 0,
+              }}
+              onSubmit={handleAddingNewTask}
+            >
+              <IconButton type="submit">
+                <AddIcon />
+              </IconButton>
+              <InputBase
+                fullWidth
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="add new task"
+              />
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
   );
 };

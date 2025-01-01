@@ -13,11 +13,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { DELETE_TASK_URL, UPDATE_TASK } from "../constants/api";
 import fetchRequest from "../api/api";
+import { globalStateContext } from "../context/GlobalStateContextProvider";
 const TaskList = ({ tasks, tasksListId }) => {
   const [isTaskEditMode, setIsTaskEditMode] = useState(null);
   const { setTasks } = useContext(taskContext);
   const [updatedValue, setUpdatedValue] = useState("");
   const [currentTask, setCurrentTask] = useState(null);
+  const { mode } = useContext(globalStateContext);
 
   function handleSelectedTask(id) {
     const currentTask = tasks.filter((task) => task.id == id);
@@ -120,19 +122,20 @@ const TaskList = ({ tasks, tasksListId }) => {
                         }}
                       >
                         <Paper
-                          variant="elavation"
-                          elevation={4}
+                          variant="elevation"
+                          elevation={1}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSelectedTask(task.id);
                           }}
                           sx={{
                             marginBottom: "10px",
-                            boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                            background: mode == "light" ? "#e9e9e6" : "#3e3e3e",
+                            boxShadow: "0px 2px 3px rgba(0, 0, 0, 0.1)",
                           }}
                           key={task.id}
                         >
-                          <ListItem sx={{}}>
+                          <ListItem>
                             {isTaskEditMode == task.id ? (
                               <Box
                                 sx={{

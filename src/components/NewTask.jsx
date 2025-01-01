@@ -37,25 +37,13 @@ const NewTask = () => {
       console.log("Error saving list", err);
     }
   }
-  const mode = "dark";
   return (
     <Box
       sx={{
-        minWidth: "400px",
+        minWidth: "350px",
       }}
     >
-      <Paper
-        sx={{
-          overflow: "hidden",
-          backgroundColor: mode === "dark" ? "#1e1e1e" : "#ffffff",
-          color: mode === "dark" ? "#ffffff" : "#000000",
-          boxShadow:
-            mode === "dark"
-              ? "0px 4px 10px rgba(0, 0, 0, 0.5)"
-              : "0px 4px 10px rgba(0, 0, 0, 0.1)",
-          border: mode === "dark" ? "1px solid #333" : "1px solid #ddd",
-        }}
-      >
+      <Paper>
         <Box
           component={"form"}
           sx={{
