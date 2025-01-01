@@ -13,6 +13,7 @@ import { authContext } from "../context/AuthContextProvider";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 import LightIcon from "@mui/icons-material/Light";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import NightlightRoundIcon from "@mui/icons-material/NightlightRound";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
 
@@ -38,7 +39,15 @@ const Header = () => {
     <Box sx={{ flexGrow: 1, height: "60px" }} justifyContent={"center"}>
       <AppBar position="static">
         <Toolbar>
-          <Typography>TaskBoard</Typography>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={"3px"}
+          >
+            <SpaceDashboardIcon />
+            <Typography variant="h6">TaskBoard</Typography>
+          </Box>
           <IconButton
             sx={{ marginLeft: "auto", marginRight: "1rem" }}
             onClick={() =>

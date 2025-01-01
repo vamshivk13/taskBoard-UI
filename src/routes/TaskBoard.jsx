@@ -18,10 +18,11 @@ import {
   LISTS_URL,
 } from "../constants/api";
 import fetchRequest from "../api/api";
+import { globalStateContext } from "../context/GlobalStateContextProvider";
 const TaskBoard = () => {
   const { setIsAuthenticated, setUser, user, isAuthenticated } =
     useContext(authContext);
-
+  const { mode } = useContext(globalStateContext);
   const [isTaskEditMode, setIsTaskEditMode] = useState(false);
   const { tasks, setTasks } = useContext(taskContext);
   const navigate = useNavigate();
@@ -151,9 +152,9 @@ const TaskBoard = () => {
           height: "100%",
           width: "100%",
           overflow: "hidden",
-          backgroundColor: "#EBEAFF",
+          backdropFilter: "blur(10px)",
+          background: mode == "dark" ? "#303334" : "#DEE4EA",
         }}
-        onClick={(e) => {}}
       >
         <Header />
         <Box
