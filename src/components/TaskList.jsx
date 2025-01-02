@@ -156,7 +156,12 @@ const TaskList = ({ tasks, tasksListId }) => {
                                 }}
                               >
                                 <InputBase
-                                  sx={{ padding: 0 }}
+                                  sx={{
+                                    padding: 0,
+                                    lineHeight: "1rem",
+                                    fontSize: "1rem",
+                                    letterSpacing: "0",
+                                  }}
                                   autoFocus
                                   fullWidth
                                   value={updatedValue}
@@ -191,7 +196,11 @@ const TaskList = ({ tasks, tasksListId }) => {
                                 </IconButton>
                               </Box>
                             ) : (
-                              task.task
+                              <Box
+                                sx={{ lineHeight: "1rem", fontSize: "1rem" }}
+                              >
+                                {task.task}
+                              </Box>
                             )}
                           </ListItem>
                         </Paper>
