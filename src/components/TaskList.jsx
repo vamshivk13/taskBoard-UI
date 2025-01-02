@@ -135,7 +135,13 @@ const TaskList = ({ tasks, tasksListId }) => {
                           }}
                           key={task.id}
                         >
-                          <ListItem>
+                          <ListItem
+                            sx={{
+                              height: "40px",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
                             {isTaskEditMode == task.id ? (
                               <Box
                                 sx={{
@@ -150,6 +156,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                                 }}
                               >
                                 <InputBase
+                                  sx={{ padding: 0 }}
                                   autoFocus
                                   fullWidth
                                   value={updatedValue}
@@ -161,7 +168,10 @@ const TaskList = ({ tasks, tasksListId }) => {
                                   }}
                                 ></InputBase>
                                 <IconButton
-                                  sx={{ marginLeft: "auto" }}
+                                  sx={{
+                                    marginLeft: "auto",
+                                    padding: 0,
+                                  }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                   }}
@@ -171,7 +181,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                                 </IconButton>
 
                                 <IconButton
-                                  sx={{ marginLeft: "auto" }}
+                                  sx={{ marginLeft: "auto", padding: 0 }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleUpdateTask("delete");
