@@ -1,9 +1,13 @@
 import React, { createContext, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 export const globalStateContext = createContext();
 const GlobalStateContextProvider = ({ children }) => {
-  const [mode, setMode] = useState("light");
+  const { value, setLocalStorageValue } = useLocalStorage("mode", "light");
+
   return (
-    <globalStateContext.Provider value={{ mode, setMode }}>
+    <globalStateContext.Provider
+      value={{ mode: value, setMode: setLocalStorageValue }}
+    >
       {children}
     </globalStateContext.Provider>
   );
