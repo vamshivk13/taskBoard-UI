@@ -25,13 +25,16 @@ const TaskBoard = () => {
   const { mode } = useContext(globalStateContext);
   const [isTaskEditMode, setIsTaskEditMode] = useState(false);
   const { tasks, setTasks } = useContext(taskContext);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { handleError, ErrorModal } = useErrorBoundary();
 
   async function fetchSavedLists(userId) {
     try {
+      setIsLoading(true);
       const lists = await fetchRequest(LISTS_URL, { userId: userId });
       setTasks(lists.data);
+      setIsLoading(false);
     } catch (err) {
       handleError({
         title: "Unable to load your tasks",
@@ -142,48 +145,58 @@ const TaskBoard = () => {
       });
     }
   }
-  if (!isAuthenticated) {
-    return <CircularProgress />;
-  } else
-    return (
+
+  return (
+    <Box
+      component={"div"}
+      sx={{
+        height: "100%",
+        width: "100%",
+        overflow: "hidden",
+        backdropFilter: "blur(10px)",
+        background: mode == "dark" ? "#303334" : "#DEE4EA",
+      }}
+    >
+      <Header />
       <Box
-        component={"div"}
         sx={{
-          height: "100%",
-          width: "100%",
-          overflow: "hidden",
-          backdropFilter: "blur(10px)",
-          background: mode == "dark" ? "#303334" : "#DEE4EA",
+          display: "flex",
+          height: "calc(100% - 60px)",
+          overflowX: "auto",
+          gap: "1rem",
+          padding: "1rem",
         }}
       >
-        <Header />
-        <Box
-          sx={{
-            display: "flex",
-            height: "calc(100% - 60px)",
-            overflowX: "auto",
-            gap: "1rem",
-            padding: "1rem",
-          }}
-        >
-          {/* List of tasks to be rendered */}
-          <DragDropContext onDragEnd={handleOnDragEnd}>
-            {tasks.map((task) => {
-              return (
-                <Task
-                  task={task}
-                  key={task.tasksListId}
-                  setIsTaskEditMode={setIsTaskEditMode}
-                  isTaskEditMode={isTaskEditMode}
-                />
-              );
-            })}
-          </DragDropContext>
-          <NewTask />
-          <ErrorModal />
-        </Box>
+        {/* List of tasks to be rendered */}
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          {tasks.map((task) => {
+            return (
+              <Task
+                task={task}
+                key={task.tasksListId}
+                setIsTaskEditMode={setIsTaskEditMode}
+                isTaskEditMode={isTaskEditMode}
+              />
+            );
+          })}
+        </DragDropContext>
+        <NewTask />
+
+        <ErrorModal />
       </Box>
-    );
+      <Box
+        sx={{
+          zIndex: "10",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+        }}
+      >
+        {(!isAuthenticated || isLoading) && <CircularProgress />}
+      </Box>
+    </Box>
+  );
 };
 
 export default TaskBoard;

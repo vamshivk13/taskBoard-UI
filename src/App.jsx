@@ -60,6 +60,13 @@ function App() {
           },
         },
       },
+      MuiCircularProgress: {
+        styleOverrides: {
+          root: {
+            color: mode === "dark" ? "#ffffff" : "#000000",
+          },
+        },
+      },
     },
   });
   return (
