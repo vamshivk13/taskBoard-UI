@@ -9,7 +9,6 @@ import Header from "../components/Header";
 import NewTask from "../components/NewTask";
 import { taskContext } from "../context/TaskContextProvider";
 import Task from "../components/Task";
-import axios from "axios";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 import {
@@ -90,7 +89,7 @@ const TaskBoard = () => {
         });
       });
       try {
-        axios.post(LIST_ALLTASKS_UPDATE_URL, {
+        fetchRequest(LIST_ALLTASKS_UPDATE_URL, {
           tasksListId: source.droppableId,
           updatedTasks: updatedTasksList,
         });
