@@ -86,7 +86,7 @@ const NewTask = () => {
                 e.stopPropagation();
               }}
             >
-              <AddIcon sx={{ color: "#ffffff" }} />
+              <AddIcon />
             </IconButton>
           ) : (
             <AddIcon sx={{ marginLeft: "auto" }} />
