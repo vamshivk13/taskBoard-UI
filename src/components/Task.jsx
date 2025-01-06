@@ -7,6 +7,7 @@ import {
   createTheme,
   IconButton,
   InputBase,
+  MenuItem,
   Paper,
   TextField,
   ThemeProvider,
@@ -18,11 +19,14 @@ import { taskContext } from "../context/TaskContextProvider";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import fetchRequest from "../api/api";
 import { CREATE_TASK, UPDATE_LIST } from "../constants/api";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ListOptionMenu from "./menu/ListOptionMenu";
 
 const Task = ({ task }) => {
   const [isTaskNameEditMode, setIsTaskNameEditMode] = useState(null);
   const [newTaskName, setNewTaskName] = useState("");
   const [newTask, setNewTask] = useState("");
+  const [listOptionMenuAnchor, setListOptionMenuAnchor] = useState(null);
 
   const { setTasks } = useContext(taskContext);
   async function handleAddingNewTask(e) {
@@ -92,6 +96,11 @@ const Task = ({ task }) => {
       }
       setNewTaskName("");
     }
+  }
+
+  function handleListOptionMenu(e) {
+    e.stopPropagation();
+    setListOptionMenuAnchor(e.currentTarget);
   }
 
   return (
@@ -185,6 +194,12 @@ const Task = ({ task }) => {
                   {task.taskName}
                 </Typography>
               )}
+              <IconButton
+                sx={{ marginLeft: "auto" }}
+                onClick={handleListOptionMenu}
+              >
+                <MoreVertIcon />
+              </IconButton>
             </Box>
             <TaskList tasks={task.tasks} tasksListId={task.tasksListId} />
             <Box
@@ -210,6 +225,11 @@ const Task = ({ task }) => {
           </CardContent>
         </Card>
       </Box>
+      <ListOptionMenu
+        listId={task.tasksListId}
+        anchor={listOptionMenuAnchor}
+        handleClose={() => setListOptionMenuAnchor(null)}
+      />
     </Box>
   );
 };

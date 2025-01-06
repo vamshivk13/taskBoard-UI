@@ -5,6 +5,7 @@ export const LOGIN_URL = "/user/login";
 export const LISTS_URL = "/task/lists";
 export const LIST_ALLTASKS_UPDATE_URL = "/task/update/task";
 export const DELETE_TASK_URL = "/task/delete";
+export const DELETE_LIST_URL = "/task/delete/list";
 export const CREATE_TASK_LIST = "/task/create/list";
 export const CREATE_TASK = "/task/create/task";
 export const UPDATE_LIST = "/task/update/list";
