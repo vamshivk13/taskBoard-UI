@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   Paper,
+  TextField,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -34,7 +35,10 @@ const TaskList = ({ tasks, tasksListId }) => {
         return tasksList.map((curTaskList) => {
           if (curTaskList.tasksListId == tasksListId) {
             const updatedTasks = curTaskList.tasks.map((curTask) => {
-              if (curTask.id == currentTask.id) {
+              if (
+                curTask.id == currentTask.id &&
+                curTask.task != updatedValue
+              ) {
                 return {
                   ...curTask,
                   task: updatedValue,
@@ -51,10 +55,11 @@ const TaskList = ({ tasks, tasksListId }) => {
       });
       setIsTaskEditMode(null);
       try {
-        fetchRequest(UPDATE_TASK, {
-          tasksListId: tasksListId,
-          task: { ...currentTask, task: updatedValue },
-        });
+        if (currentTask.task != updatedValue)
+          fetchRequest(UPDATE_TASK, {
+            tasksListId: tasksListId,
+            task: { ...currentTask, task: updatedValue },
+          });
       } catch (err) {
         // handleError({
         //   title: "Unable to update your tasks",
@@ -137,7 +142,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                         >
                           <ListItem
                             sx={{
-                              height: "40px",
+                              // height: "40px",
                               display: "flex",
                               alignItems: "center",
                             }}
@@ -155,37 +160,34 @@ const TaskList = ({ tasks, tasksListId }) => {
                                   handleUpdateTask("edit");
                                 }}
                               >
-                                <InputBase
+                                <TextField
                                   sx={{
                                     padding: 0,
                                     lineHeight: "1rem",
                                     fontSize: "1rem",
                                     letterSpacing: "0",
+                                    "& .MuiInputBase-root": {
+                                      padding: 0,
+                                      lineHeight: "1rem",
+                                      letterSpacing: 0,
+                                    },
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                      border: "none",
+                                    },
                                   }}
                                   autoFocus
                                   fullWidth
+                                  multiline
                                   value={updatedValue}
                                   onChange={(e) =>
                                     setUpdatedValue(e.target.value)
                                   }
                                   onBlur={() => {
                                     setIsTaskEditMode(null);
+                                    handleUpdateTask("edit");
                                   }}
-                                ></InputBase>
-                                <IconButton
-                                  sx={{
-                                    marginLeft: "auto",
-                                    padding: 0,
-                                  }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                  type="submit"
-                                >
-                                  <EditIcon />
-                                </IconButton>
-
-                                <IconButton
+                                ></TextField>
+                                {/* <IconButton
                                   sx={{ marginLeft: "auto", padding: 0 }}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -193,7 +195,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                                   }}
                                 >
                                   <DeleteOutlineIcon />
-                                </IconButton>
+                                </IconButton> */}
                               </Box>
                             ) : (
                               <Box
