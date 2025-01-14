@@ -22,7 +22,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
-  const { isAuthenticated } = useContext(authContext);
+  const { isAuthenticated, setIsAuthenticated, setUser } =
+    useContext(authContext);
   const { handleError, ErrorModal } = useErrorBoundary();
 
   const navigate = useNavigate();
@@ -39,8 +40,10 @@ const Login = () => {
             email: email,
             password,
           });
-          Cookies.set("user", JSON.stringify(user.data));
-          if (user) {
+          if (user.data) {
+            Cookies.set("token", user.data.token);
+            setIsAuthenticated(true);
+            setUser(user.data.user);
             navigate("/");
           }
         } else {
@@ -62,8 +65,10 @@ const Login = () => {
             email: email,
             password: password,
           });
-          if (user) {
-            Cookies.set("user", JSON.stringify(user.data));
+          if (user.data) {
+            Cookies.set("token", user.data.token);
+            setIsAuthenticated(true);
+            setUser(user.data.user);
             navigate("/");
           } else {
             //handle validation
@@ -82,6 +87,7 @@ const Login = () => {
       navigate("/");
     }
   }, [isAuthenticated]);
+
   function handleGoogleAuthentication() {
     window.location.href =
       "https://task-board-backend-cbnz.onrender.com/user/auth";

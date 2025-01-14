@@ -31,7 +31,7 @@ const Header = () => {
   };
 
   function handleLogout() {
-    Cookies.remove("user");
+    Cookies.remove("token");
     setIsAuthenticated(false);
     navigate("/login");
   }

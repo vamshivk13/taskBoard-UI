@@ -15,6 +15,7 @@ import {
   DELETE_TASK_URL,
   LIST_ALLTASKS_UPDATE_URL,
   LISTS_URL,
+  USER_AUTH_TOKEN_URL,
 } from "../constants/api";
 import fetchRequest from "../api/api";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
@@ -44,28 +45,52 @@ const TaskBoard = () => {
   }
 
   useEffect(() => {
-    const user = Cookies.get("user");
-    const urlParams = new URLSearchParams(window.location.search);
-    const googleUser = urlParams.get("user");
-
-    if (user) {
-      console.log(user);
-      setIsAuthenticated(true);
-      const userDetails = JSON.parse(user);
-      setUser(userDetails);
-      fetchSavedLists(userDetails.userId);
-    } else if (googleUser) {
-      console.log(googleUser);
-      setIsAuthenticated(true);
-      window.history.replaceState({}, document.title, "/");
-      const userDetails = JSON.parse(googleUser);
-      console.log("googleuser", googleUser, userDetails);
-      setUser(googleUser);
-      fetchSavedLists(userDetails.userId);
-    } else {
-      navigate("/login");
+    async function authenticateViaCustomLoginToken(token) {
+      try {
+        const user = await fetchRequest(
+          USER_AUTH_TOKEN_URL,
+          {
+            token: token,
+          },
+          "POST"
+        );
+        console.log("TOKEN AUTH RESPONSE", user);
+        if (user) return user.data;
+        else return null;
+      } catch (err) {
+        console.log("Token Authentication Error", err);
+      }
     }
-  }, []);
+    async function authenticateUser() {
+      const authToken = Cookies.get("token");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const googleUser = urlParams.get("user");
+      const user = await authenticateViaCustomLoginToken(authToken);
+      if (user) {
+        console.log(user);
+        setIsAuthenticated(true);
+        // const userDetails = JSON.parse(user);
+        setUser(user);
+        // fetchSavedLists(user.userId);
+      } else if (googleUser) {
+        console.log(googleUser);
+        setIsAuthenticated(true);
+        window.history.replaceState({}, document.title, "/");
+        const userDetails = JSON.parse(googleUser);
+        console.log("googleuser", googleUser, userDetails);
+        setUser(googleUser);
+        // fetchSavedLists(userDetails.userId);
+      } else {
+        navigate("/login");
+      }
+    }
+    if (!isAuthenticated) authenticateUser();
+    else {
+      fetchSavedLists(user.userId);
+    }
+  }, [isAuthenticated]);
+
   async function handleOnDragEnd(result) {
     const { source, destination } = result;
 
