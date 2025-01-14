@@ -16,9 +16,11 @@ import LightIcon from "@mui/icons-material/Light";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import NightlightRoundIcon from "@mui/icons-material/NightlightRound";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
+import { taskContext } from "../context/TaskContextProvider";
 
 const Header = () => {
   const { user, setIsAuthenticated } = useContext(authContext);
+  const { setTasks } = useContext(taskContext);
   const { mode, setMode } = useContext(globalStateContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const Header = () => {
 
   function handleLogout() {
     Cookies.remove("token");
+    setTasks([]);
     setIsAuthenticated(false);
     navigate("/login");
   }
