@@ -45,14 +45,15 @@ const TaskBoard = () => {
   }
 
   useEffect(() => {
-    async function authenticateViaCustomLoginToken(token) {
+    async function authenticateViaCustomLoginToken(token, config = {}) {
       try {
         const user = await fetchRequest(
           USER_AUTH_TOKEN_URL,
           {
             token: token,
           },
-          "POST"
+          "POST",
+          { ...config }
         );
         console.log("TOKEN AUTH RESPONSE", user);
         if (user) return user.data;
@@ -66,7 +67,9 @@ const TaskBoard = () => {
       const googleToken = Cookies.get("google-token");
       console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
       const googleUser = await authenticateViaCustomLoginToken(googleToken);
-      const user = await authenticateViaCustomLoginToken(authToken);
+      const user = await authenticateViaCustomLoginToken(authToken, {
+        withCredentials: true,
+      });
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
