@@ -34,6 +34,7 @@ const Header = () => {
 
   function handleLogout() {
     Cookies.remove("token");
+    Cookies.remove("google-token");
     setTasks([]);
     setIsAuthenticated(false);
     navigate("/login");

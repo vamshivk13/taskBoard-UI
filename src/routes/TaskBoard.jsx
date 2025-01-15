@@ -63,24 +63,17 @@ const TaskBoard = () => {
     }
     async function authenticateUser() {
       const authToken = Cookies.get("token");
+      const googleToken = Cookies.get("google-token");
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const googleUser = urlParams.get("user");
-      const user = await authenticateViaCustomLoginToken(authToken);
-      if (user) {
-        console.log(user);
+      if (authToken) {
+        const user = await authenticateViaCustomLoginToken(authToken);
         setIsAuthenticated(true);
-        // const userDetails = JSON.parse(user);
         setUser(user);
-        // fetchSavedLists(user.userId);
-      } else if (googleUser) {
-        console.log(googleUser);
+      } else if (googleToken) {
+        console.log("TOKEN GOOGLE", googleToken);
+        const googleUser = await authenticateViaCustomLoginToken(googleToken);
         setIsAuthenticated(true);
-        window.history.replaceState({}, document.title, "/");
-        const userDetails = JSON.parse(googleUser);
-        console.log("googleuser", googleUser, userDetails);
         setUser(googleUser);
-        // fetchSavedLists(userDetails.userId);
       } else {
         navigate("/login");
       }
