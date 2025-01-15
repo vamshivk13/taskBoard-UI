@@ -64,14 +64,13 @@ const TaskBoard = () => {
     async function authenticateUser() {
       const authToken = Cookies.get("token");
       const googleToken = Cookies.get("google-token");
-
-      if (authToken) {
-        const user = await authenticateViaCustomLoginToken(authToken);
+      console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
+      const googleUser = await authenticateViaCustomLoginToken(googleToken);
+      const user = await authenticateViaCustomLoginToken(authToken);
+      if (user) {
         setIsAuthenticated(true);
         setUser(user);
-      } else if (googleToken) {
-        console.log("TOKEN GOOGLE", googleToken);
-        const googleUser = await authenticateViaCustomLoginToken(googleToken);
+      } else if (googleUser) {
         setIsAuthenticated(true);
         setUser(googleUser);
       } else {
