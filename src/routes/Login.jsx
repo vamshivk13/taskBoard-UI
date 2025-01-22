@@ -94,7 +94,7 @@ const Login = () => {
   }
 
   return (
-    <Box
+    <Paper
       sx={{
         display: "flex",
         justifyContent: "center",
@@ -181,7 +181,7 @@ const Login = () => {
         </Button>
       </Paper>
       <ErrorModal />
-    </Box>
+    </Paper>
   );
 };
 

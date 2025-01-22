@@ -6,9 +6,9 @@ import Cookies from "js-cookie";
 import { Box, CircularProgress } from "@mui/material";
 
 import Header from "../components/Header";
-import NewTask from "../components/NewTask";
+import NewTask from "../components/NewList";
 import { taskContext } from "../context/TaskContextProvider";
-import Task from "../components/Task";
+import Task from "../components/BoardList";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 import {

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import TaskList from "./TaskList";
+import TaskList from "./Tasks";
 import {
   Box,
   Card,
@@ -22,15 +22,19 @@ import { CREATE_TASK, UPDATE_LIST } from "../constants/api";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ListOptionMenu from "./menu/ListOptionMenu";
 
-const Task = ({ task }) => {
+const BoardList = ({ task }) => {
   const [isTaskNameEditMode, setIsTaskNameEditMode] = useState(null);
   const [newTaskName, setNewTaskName] = useState("");
   const [newTask, setNewTask] = useState("");
   const [listOptionMenuAnchor, setListOptionMenuAnchor] = useState(null);
 
   const { setTasks } = useContext(taskContext);
+
   async function handleAddingNewTask(e) {
     e.preventDefault();
+    if (e.target.value == "") {
+      return;
+    }
     const id = uuid();
     const newTaskToAdd = {
       task: newTask,
@@ -107,7 +111,9 @@ const Task = ({ task }) => {
     <Box
       sx={{
         display: "block",
-        minWidth: "350px",
+        minWidth: "400px",
+        maxWidth: "400px",
+        width: "400px",
         height: "calc(100% - 50px)",
         overflow: "hidden",
         boxSizing: "border-box",
@@ -125,6 +131,8 @@ const Task = ({ task }) => {
             sx={{
               ":last-child": { paddingBottom: "5px" },
               flex: 1,
+              boxSizing: "border-box",
+              maxWidth: "400px",
               maxHeight: "100%",
               display: "flex",
               padding: "12px",
@@ -234,4 +242,4 @@ const Task = ({ task }) => {
   );
 };
 
-export default Task;
+export default BoardList;

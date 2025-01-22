@@ -8,7 +8,7 @@ import { authContext } from "../context/AuthContextProvider";
 import { useErrorBoundary } from "./useErrorBoundary";
 import { CREATE_TASK_LIST } from "../constants/api";
 
-const NewTask = () => {
+const NewList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [listName, setListName] = useState("");
   const { setTasks } = useContext(taskContext);
@@ -16,6 +16,9 @@ const NewTask = () => {
   const { handleError, ErrorModal } = useErrorBoundary();
 
   async function handleAddingNewTaskList() {
+    if (!listName) {
+      return;
+    }
     const newTaskList = {
       tasksListId: uuid(),
       userId: user.userId,
@@ -74,7 +77,6 @@ const NewTask = () => {
               onChange={(e) => {
                 setListName(e.target.value);
               }}
-              // onBlur={() => setIsEditMode(false)}
             />
           )}
 
@@ -98,4 +100,4 @@ const NewTask = () => {
   );
 };
 
-export default NewTask;
+export default NewList;

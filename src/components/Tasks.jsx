@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   InputBase,
   List,
@@ -7,7 +8,7 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { taskContext } from "../context/TaskContextProvider";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,17 +16,19 @@ import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { DELETE_TASK_URL, UPDATE_TASK } from "../constants/api";
 import fetchRequest from "../api/api";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
-const TaskList = ({ tasks, tasksListId }) => {
+const Tasks = ({ tasks, tasksListId }) => {
   const [isTaskEditMode, setIsTaskEditMode] = useState(null);
   const { setTasks } = useContext(taskContext);
   const [updatedValue, setUpdatedValue] = useState("");
   const [currentTask, setCurrentTask] = useState(null);
   const { mode } = useContext(globalStateContext);
+  const textFieldRef = useRef(null);
 
   function handleSelectedTask(id) {
     const currentTask = tasks.filter((task) => task.id == id);
     setCurrentTask(currentTask[0]);
     setUpdatedValue(currentTask[0].task);
+
     setIsTaskEditMode(id);
   }
 
@@ -99,13 +102,14 @@ const TaskList = ({ tasks, tasksListId }) => {
       setUpdatedValue("");
     }
   }
-
+  console.log("RENDERED");
   return (
     <List
       sx={{
         padding: "0",
         // maxHeight: "100%",
         display: "flex",
+        width: "100%",
         flexDirection: "column",
         overflowY: "auto",
       }}
@@ -143,6 +147,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                           <ListItem
                             sx={{
                               // height: "40px",
+                              width: "100%",
                               display: "flex",
                               alignItems: "center",
                             }}
@@ -162,6 +167,7 @@ const TaskList = ({ tasks, tasksListId }) => {
                               >
                                 <TextField
                                   sx={{
+                                    boxSizing: "border-box",
                                     padding: 0,
                                     lineHeight: "1rem",
                                     fontSize: "1rem",
@@ -170,23 +176,33 @@ const TaskList = ({ tasks, tasksListId }) => {
                                       padding: 0,
                                       lineHeight: "1rem",
                                       letterSpacing: 0,
+                                      fontSize: "16px",
                                     },
                                     "& .MuiOutlinedInput-notchedOutline": {
                                       border: "none",
                                     },
                                   }}
-                                  autoFocus
                                   fullWidth
+                                  autoFocus
                                   multiline
+                                  inputRef={textFieldRef}
                                   value={updatedValue}
-                                  onChange={(e) =>
-                                    setUpdatedValue(e.target.value)
-                                  }
+                                  onChange={(e) => {
+                                    setUpdatedValue(e.target.value);
+                                  }}
                                   onBlur={() => {
                                     setIsTaskEditMode(null);
                                     handleUpdateTask("edit");
                                   }}
+                                  onFocus={(e) => {
+                                    textFieldRef.current =
+                                      e.target.setSelectionRange(
+                                        updatedValue.length,
+                                        updatedValue.length
+                                      );
+                                  }}
                                 ></TextField>
+
                                 {/* <IconButton
                                   sx={{ marginLeft: "auto", padding: 0 }}
                                   onClick={(e) => {
@@ -199,7 +215,11 @@ const TaskList = ({ tasks, tasksListId }) => {
                               </Box>
                             ) : (
                               <Box
-                                sx={{ lineHeight: "1rem", fontSize: "1rem" }}
+                                sx={{
+                                  lineHeight: "1rem",
+                                  fontSize: "16px",
+                                  wordBreak: "break-word",
+                                }}
                               >
                                 {task.task}
                               </Box>
@@ -220,4 +240,4 @@ const TaskList = ({ tasks, tasksListId }) => {
   );
 };
 
-export default TaskList;
+export default Tasks;
