@@ -83,7 +83,9 @@ const Login = () => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) {
+    const authToken = Cookies.get("token");
+    const googleToken = Cookies.get("google-token");
+    if (isAuthenticated || authToken || googleToken) {
       navigate("/");
     }
   }, [isAuthenticated]);
