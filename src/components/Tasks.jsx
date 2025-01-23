@@ -202,16 +202,6 @@ const Tasks = ({ tasks, tasksListId }) => {
                                       );
                                   }}
                                 ></TextField>
-
-                                {/* <IconButton
-                                  sx={{ marginLeft: "auto", padding: 0 }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleUpdateTask("delete");
-                                  }}
-                                >
-                                  <DeleteOutlineIcon />
-                                </IconButton> */}
                               </Box>
                             ) : (
                               <Box
@@ -224,6 +214,21 @@ const Tasks = ({ tasks, tasksListId }) => {
                                 {task.task}
                               </Box>
                             )}
+                            {/* <IconButton
+                              sx={{
+                                marginLeft: "auto",
+                                padding: 0,
+                                display: "none",
+                                position: "absolute",
+                                right: 0,
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateTask("delete");
+                              }}
+                            >
+                              <DeleteOutlineIcon />
+                            </IconButton> */}
                           </ListItem>
                         </Paper>
                       </div>

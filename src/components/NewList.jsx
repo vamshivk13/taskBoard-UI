@@ -77,6 +77,10 @@ const NewList = () => {
               onChange={(e) => {
                 setListName(e.target.value);
               }}
+              onBlur={(e) => {
+                e.stopPropagation();
+                setIsEditMode(false);
+              }}
             />
           )}
 
