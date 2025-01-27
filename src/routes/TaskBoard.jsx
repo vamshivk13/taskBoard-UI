@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { authContext } from "../context/AuthContextProvider";
 import Cookies from "js-cookie";
-import { Box, CircularProgress } from "@mui/material";
-
+import { Box, CircularProgress, Typography } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import Header from "../components/Header";
 import NewTask from "../components/NewList";
 import { taskContext } from "../context/TaskContextProvider";
@@ -13,78 +13,65 @@ import { DragDropContext } from "@hello-pangea/dnd";
 import { useErrorBoundary } from "../components/useErrorBoundary";
 import {
   DELETE_TASK_URL,
+  GET_BOARDS,
   LIST_ALLTASKS_UPDATE_URL,
+  LIST_BY_BOARD,
   LISTS_URL,
   USER_AUTH_TOKEN_URL,
 } from "../constants/api";
 import fetchRequest from "../api/api";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
+import BoardHeader from "../components/BoardHeader";
+import SidebarDrawer from "../components/SidebarDrawer";
 const TaskBoard = () => {
   const { setIsAuthenticated, setUser, user, isAuthenticated } =
     useContext(authContext);
-  const { mode } = useContext(globalStateContext);
+  const {
+    mode,
+    currentBoard,
+    setCurrentBoard,
+    setIsInitialLoadingDone,
+    isInitialLoadingDone,
+  } = useContext(globalStateContext);
   const [isTaskEditMode, setIsTaskEditMode] = useState(false);
-  const { tasks, setTasks } = useContext(taskContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const { tasks, setTasks, boards, setBoards } = useContext(taskContext);
+  const params = useParams();
   const navigate = useNavigate();
   const { handleError, ErrorModal } = useErrorBoundary();
 
-  async function fetchSavedLists(userId) {
+  async function fetchSavedLists(userId, boardId) {
     try {
-      setIsLoading(true);
-      const lists = await fetchRequest(LISTS_URL, { userId: userId });
+      const lists = await fetchRequest(LIST_BY_BOARD, {
+        userId: userId,
+        boardId: boardId,
+      });
+      console.log("LIST BY BOARD", lists.data);
       setTasks(lists.data);
-      setIsLoading(false);
     } catch (err) {
       handleError({
         title: "Unable to load your tasks",
-        message: err.response.data,
+        message: "",
       });
       console.log("Error while fetching tasks", err);
     }
   }
 
   useEffect(() => {
-    async function authenticateViaCustomLoginToken(token, config = {}) {
-      try {
-        const user = await fetchRequest(
-          USER_AUTH_TOKEN_URL,
-          {
-            token: token,
-          },
-          "POST",
-          { ...config }
-        );
-        console.log("TOKEN AUTH RESPONSE", user);
-        if (user) return user.data;
-        else return null;
-      } catch (err) {
-        console.log("Token Authentication Error", err);
-      }
+    if (!params.boardId && currentBoard) {
+      console.log(
+        "No Param, navigating with one from currentBoard",
+        params,
+        currentBoard
+      );
+      navigate("/" + currentBoard.id);
+    } else if (params.boardId && isInitialLoadingDone) {
+      console.log("PArams found", params);
+      fetchSavedLists(user.userId, params.boardId);
+    } else if (isInitialLoadingDone && !currentBoard) {
+      console.log("NAVIGATING as no board is precent", currentBoard);
+      navigate("/dashboard");
     }
-    async function authenticateUser() {
-      const authToken = Cookies.get("token");
-      const googleToken = Cookies.get("google-token");
-      console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
-      const googleUser = await authenticateViaCustomLoginToken(googleToken);
-      const user = await authenticateViaCustomLoginToken(authToken, {
-        withCredentials: true,
-      });
-      if (user) {
-        setIsAuthenticated(true);
-        setUser(user);
-      } else if (googleUser) {
-        setIsAuthenticated(true);
-        setUser(googleUser);
-      } else {
-        navigate("/login");
-      }
-    }
-    if (!isAuthenticated) authenticateUser();
-    else {
-      fetchSavedLists(user.userId);
-    }
-  }, [isAuthenticated]);
+  }, [currentBoard, isInitialLoadingDone, params.boardId]);
 
   async function handleOnDragEnd(result) {
     const { source, destination } = result;
@@ -172,47 +159,56 @@ const TaskBoard = () => {
         height: "100%",
         width: "100%",
         overflow: "hidden",
-        backdropFilter: "blur(10px)",
-        background: mode == "dark" ? "#303334" : "#DEE4EA",
+        // backdropFilter: "blur(10px)",
+        background:
+          mode == "dark" ? "#303334" : "linear-gradient(#FAF9F6	,#fff	)",
       }}
     >
       <Header />
-      <Box
-        sx={{
-          display: "flex",
-          height: "calc(100% - 60px)",
-          overflowX: "auto",
-          gap: "1rem",
-          padding: "1rem",
-        }}
-      >
-        {/* List of tasks to be rendered */}
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          {tasks.map((task) => {
-            return (
-              <Task
-                task={task}
-                key={task.tasksListId}
-                setIsTaskEditMode={setIsTaskEditMode}
-                isTaskEditMode={isTaskEditMode}
-              />
-            );
-          })}
-        </DragDropContext>
-        <NewTask />
+      <Box sx={{ display: "flex" }} height={"100%"}>
+        <SidebarDrawer isOpen={true} />
+        <Box sx={{ flex: 1 }}>
+          <BoardHeader />
+          <Box
+            sx={{
+              display: "flex",
+              height: "calc(100% - 120px)",
+              overflowX: "auto",
+              gap: "1rem",
+              padding: "1rem",
+            }}
+          >
+            {/* List of tasks to be rendered */}
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              {tasks.map((task) => {
+                return (
+                  <Task
+                    task={task}
+                    key={task.tasksListId}
+                    setIsTaskEditMode={setIsTaskEditMode}
+                    isTaskEditMode={isTaskEditMode}
+                  />
+                );
+              })}
+            </DragDropContext>
+            <NewTask />
 
-        <ErrorModal />
-      </Box>
-      <Box
-        sx={{
-          zIndex: "10",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
-        }}
-      >
-        {(!isAuthenticated || isLoading) && <CircularProgress />}
+            <ErrorModal />
+          </Box>
+          <Box
+            sx={{
+              zIndex: "10",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+            }}
+          >
+            {(!isAuthenticated || !isInitialLoadingDone) && (
+              <CircularProgress />
+            )}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

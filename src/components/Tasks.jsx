@@ -12,6 +12,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { taskContext } from "../context/TaskContextProvider";
 import EditIcon from "@mui/icons-material/Edit";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { DELETE_TASK_URL, UPDATE_TASK } from "../constants/api";
 import fetchRequest from "../api/api";
@@ -32,7 +33,7 @@ const Tasks = ({ tasks, tasksListId }) => {
     setIsTaskEditMode(id);
   }
 
-  function handleUpdateTask(type) {
+  function handleUpdateTask(type, id) {
     if (type == "edit") {
       setTasks((tasksList) => {
         return tasksList.map((curTaskList) => {
@@ -73,11 +74,12 @@ const Tasks = ({ tasks, tasksListId }) => {
       setUpdatedValue("");
     } else if (type == "delete") {
       console.log("IN DELETE TASK");
+      const curTask = tasks.filter((task) => task.id == id)[0];
       setTasks((lists) => {
         return lists.map((curTaskList) => {
           if (curTaskList.tasksListId == tasksListId) {
             const updatedTasks = curTaskList.tasks.filter(
-              (curTask) => curTask.id != currentTask.id
+              (curTask) => curTask.id != id
             );
             console.log("UPDATED TASK", updatedTasks);
             return { ...curTaskList, tasks: [...updatedTasks] };
@@ -90,7 +92,7 @@ const Tasks = ({ tasks, tasksListId }) => {
       try {
         fetchRequest(DELETE_TASK_URL, {
           tasksListId: tasksListId,
-          task: { ...currentTask },
+          task: { ...curTask },
         });
       } catch (err) {
         handleError({
@@ -147,9 +149,13 @@ const Tasks = ({ tasks, tasksListId }) => {
                           <ListItem
                             sx={{
                               // height: "40px",
+                              position: "relative",
                               width: "100%",
                               display: "flex",
                               alignItems: "center",
+                              "&:hover .hidden-button": {
+                                display: "block",
+                              },
                             }}
                           >
                             {isTaskEditMode == task.id ? (
@@ -215,19 +221,20 @@ const Tasks = ({ tasks, tasksListId }) => {
                               </Box>
                             )}
                             {/* <IconButton
+                              className="hidden-button"
                               sx={{
-                                marginLeft: "auto",
-                                padding: 0,
                                 display: "none",
+                                height: "50%",
                                 position: "absolute",
                                 right: 0,
+                                alignItems: "center",
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleUpdateTask("delete");
+                                handleUpdateTask("delete", task.id);
                               }}
                             >
-                              <DeleteOutlineIcon />
+                              <HighlightOffIcon />
                             </IconButton> */}
                           </ListItem>
                         </Paper>

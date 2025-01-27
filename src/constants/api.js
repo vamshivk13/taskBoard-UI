@@ -14,3 +14,11 @@ export const CREATE_TASK_LIST = "/task/create/list";
 export const CREATE_TASK = "/task/create/task";
 export const UPDATE_LIST = "/task/update/list";
 export const UPDATE_TASK = "/task/update";
+//TASKS BY BOARD
+export const LIST_BY_BOARD = "/task/board-list";
+
+//BOARDS
+export const GET_BOARDS = "/board";
+export const CREATE_BOARD = "/board/create";
+export const UPDATE_BOARD = "/board/update";
+export const DELETE_BOARD = "/board/delete";

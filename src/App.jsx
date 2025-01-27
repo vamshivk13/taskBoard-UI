@@ -1,30 +1,116 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./routes/Login";
 import TaskBoard from "./routes/TaskBoard";
-import AuthContextProvider from "./context/AuthContextProvider";
-import TaskContextProvider from "./context/TaskContextProvider";
-import { createTheme, ThemeProvider } from "@mui/material";
+import Cookies from "js-cookie";
+import {
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import GlobalStateContextProvider, {
   globalStateContext,
 } from "./context/GlobalStateContextProvider";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import Dashboard from "./routes/Dashboard";
+import fetchRequest from "./api/api";
+import { GET_BOARDS, USER_AUTH_TOKEN_URL } from "./constants/api";
+import { authContext } from "./context/AuthContextProvider";
+import { taskContext } from "./context/TaskContextProvider";
 
 function App() {
+  const { setIsAuthenticated, setUser, user, isAuthenticated } =
+    useContext(authContext);
+  const { mode, setCurrentBoard, setIsInitialLoadingDone } =
+    useContext(globalStateContext);
+  const { setBoards } = useContext(taskContext);
   const router = createBrowserRouter([
     {
       path: "/",
       element: <TaskBoard />,
     },
     {
+      path: "/:boardId",
+      element: <TaskBoard />,
+    },
+    {
       path: "login",
       element: <Login />,
     },
+    {
+      path: "dashboard",
+      element: <Dashboard />,
+    },
   ]);
 
-  const { mode } = useContext(globalStateContext);
+  const [curMode, setCurMode] = useState(mode);
+
+  useEffect(() => {
+    setCurMode(curMode);
+  }, [mode]);
+
+  async function fetchBoardsByUser(userId) {
+    try {
+      const boards = await fetchRequest(GET_BOARDS, {}, "GET", {
+        params: {
+          userId: userId,
+        },
+      });
+      console.log("BOARDS", boards.data);
+      setBoards(boards.data);
+      setCurrentBoard(boards.data[0] || null);
+      setIsInitialLoadingDone(true);
+    } catch (err) {
+      console.log("ERROR Fetching boards of user", err);
+    }
+  }
+  useEffect(() => {
+    setIsInitialLoadingDone(false);
+    async function authenticateViaCustomLoginToken(token, config = {}) {
+      try {
+        const user = await fetchRequest(
+          USER_AUTH_TOKEN_URL,
+          {
+            token: token,
+          },
+          "POST",
+          { ...config }
+        );
+        console.log("TOKEN AUTH RESPONSE", user);
+        if (user) return user.data;
+        else return null;
+      } catch (err) {
+        console.log("Token Authentication Error", err);
+      }
+    }
+
+    async function authenticateUser() {
+      const authToken = Cookies.get("token");
+      const googleToken = Cookies.get("google-token");
+      console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
+      const googleUser = await authenticateViaCustomLoginToken(googleToken);
+      const user = await authenticateViaCustomLoginToken(authToken, {
+        withCredentials: true,
+      });
+      if (user) {
+        setIsAuthenticated(true);
+        setUser(user);
+      } else if (googleUser) {
+        setIsAuthenticated(true);
+        setUser(googleUser);
+      } else {
+        navigate("/login");
+      }
+    }
+    if (!isAuthenticated) authenticateUser();
+    else {
+      fetchBoardsByUser(user.userId);
+    }
+  }, [isAuthenticated]);
+
   const theme = createTheme({
     palette: {
-      mode,
+      mode: mode,
     },
     components: {
       MuiCard: {
@@ -70,13 +156,10 @@ function App() {
     },
   });
   return (
-    <AuthContextProvider>
-      <TaskContextProvider>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={router}></RouterProvider>
-        </ThemeProvider>
-      </TaskContextProvider>
-    </AuthContextProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <RouterProvider router={router}></RouterProvider>
+    </ThemeProvider>
   );
 }
 

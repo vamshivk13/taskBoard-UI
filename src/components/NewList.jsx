@@ -7,12 +7,14 @@ import fetchRequest from "../api/api";
 import { authContext } from "../context/AuthContextProvider";
 import { useErrorBoundary } from "./useErrorBoundary";
 import { CREATE_TASK_LIST } from "../constants/api";
+import { globalStateContext } from "../context/GlobalStateContextProvider";
 
 const NewList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [listName, setListName] = useState("");
   const { setTasks } = useContext(taskContext);
   const { user } = useContext(authContext);
+  const { currentBoard } = useContext(globalStateContext);
   const { handleError, ErrorModal } = useErrorBoundary();
 
   async function handleAddingNewTaskList() {
@@ -24,6 +26,7 @@ const NewList = () => {
       userId: user.userId,
       tasks: [],
       taskName: listName,
+      boardId: currentBoard.id,
     };
     setTasks((tasksList) => {
       return [...tasksList, newTaskList];

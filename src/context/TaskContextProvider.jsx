@@ -5,8 +5,9 @@ export const taskContext = createContext();
 
 const TaskContextProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
+  const [boards, setBoards] = useState([]);
   return (
-    <taskContext.Provider value={{ tasks, setTasks }}>
+    <taskContext.Provider value={{ tasks, setTasks, boards, setBoards }}>
       {children}
     </taskContext.Provider>
   );
