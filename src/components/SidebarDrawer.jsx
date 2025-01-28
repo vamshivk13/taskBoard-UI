@@ -8,7 +8,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
 import AddIcon from "@mui/icons-material/Add";
@@ -17,6 +17,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import NewBoardDialog from "./dialog/NewBoardDialog";
 const SidebarDrawer = () => {
   const {
     setIsSideBarOpen,
@@ -27,6 +28,7 @@ const SidebarDrawer = () => {
   } = useContext(globalStateContext);
   const navigate = useNavigate();
   const params = useParams();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { boards, setBoards, setTasks } = useContext(taskContext);
   return (
     <Drawer
@@ -43,6 +45,10 @@ const SidebarDrawer = () => {
       variant="permanent"
     >
       <Toolbar></Toolbar>
+      <NewBoardDialog
+        isAddDialogOpen={isAddDialogOpen}
+        setIsAddDialogOpen={setIsAddDialogOpen}
+      />
       <Paper
         sx={{
           minHeight: "45px",
@@ -116,6 +122,7 @@ const SidebarDrawer = () => {
         <Typography>Your Boards</Typography>
         <IconButton
           sx={{ padding: 0, marginLeft: "auto", borderRadius: "2px" }}
+          onClick={() => setIsAddDialogOpen(true)}
         >
           <AddIcon />
         </IconButton>

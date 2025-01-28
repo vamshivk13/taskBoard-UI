@@ -1,62 +1,21 @@
 import React, { useContext, useState } from "react";
 import Header from "../components/Header";
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormGroup,
-  FormLabel,
-  Grid2,
-  IconButton,
-  InputBase,
-  List,
-  ListItem,
-  Paper,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Box, Grid2, IconButton, Paper, Typography } from "@mui/material";
 import QueueIcon from "@mui/icons-material/Queue";
-import AddIcon from "@mui/icons-material/Add";
-import DoneIcon from "@mui/icons-material/Done";
-import CloseIcon from "@mui/icons-material/Close";
 import { taskContext } from "../context/TaskContextProvider";
-import { authContext } from "../context/AuthContextProvider";
-import { v4 as uuid } from "uuid";
-import fetchRequest from "../api/api";
-import { CREATE_BOARD } from "../constants/api";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
 import SidebarDrawer from "../components/SidebarDrawer";
 import BoardHeader from "../components/BoardHeader";
+import NewBoardDialog from "../components/dialog/NewBoardDialog";
 
 const Dashboard = () => {
   const { boards, setBoards, setTasks } = useContext(taskContext);
-  const { user } = useContext(authContext);
   const { setCurrentBoard, mode } = useContext(globalStateContext);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [boardName, setBoardName] = useState("");
+
   const navigate = useNavigate();
 
-  async function handleNewBoard(e) {
-    e.preventDefault();
-    console.log(user);
-    const newBoardData = {
-      boardName: boardName,
-      userId: user.userId,
-      id: uuid(),
-    };
-    setBoards((prev) => [...prev, newBoardData]);
-    setIsAddDialogOpen(false);
-    setBoardName("");
-    try {
-      const res = await fetchRequest(CREATE_BOARD, newBoardData);
-    } catch (err) {
-      console.log("ERROR creating new board", err);
-    }
-  }
   return (
     <Box
       sx={{
@@ -71,39 +30,11 @@ const Dashboard = () => {
         sx={{ height: "calc(100% - 110px)", overflow: "auto", display: "flex" }}
       >
         <SidebarDrawer />
+        <NewBoardDialog
+          isAddDialogOpen={isAddDialogOpen}
+          setIsAddDialogOpen={setIsAddDialogOpen}
+        />
         <Box sx={{ flex: 1 }}>
-          <Dialog
-            fullWidth
-            open={isAddDialogOpen}
-            onClose={() => {
-              setIsAddDialogOpen(false);
-              setBoardName("");
-            }}
-          >
-            <DialogTitle title="Add New Board">Add New Board</DialogTitle>
-            <DialogContent>
-              <Box component={"form"} onSubmit={handleNewBoard}>
-                <FormGroup>
-                  <FormLabel>Board Name</FormLabel>
-                  <TextField
-                    autoFocus
-                    name="board-name"
-                    value={boardName}
-                    variant="standard"
-                    onChange={(e) => setBoardName(e.target.value)}
-                  ></TextField>
-                </FormGroup>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <IconButton onClick={() => setIsAddDialogOpen(false)}>
-                <CloseIcon />
-              </IconButton>
-              <IconButton onClick={handleNewBoard}>
-                <DoneIcon />
-              </IconButton>
-            </DialogActions>
-          </Dialog>
           <Box
             sx={{
               height: "100%",
