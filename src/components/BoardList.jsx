@@ -114,7 +114,7 @@ const BoardList = ({ task }) => {
         minWidth: "400px",
         maxWidth: "400px",
         width: "400px",
-        height: "calc(100% - 50px)",
+        height: "calc(100% - 20px)",
         overflow: "hidden",
         boxSizing: "border-box",
       }}

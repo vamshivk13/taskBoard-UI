@@ -25,7 +25,7 @@ const SidebarDrawer = () => {
   } = useContext(globalStateContext);
   const navigate = useNavigate();
   const params = useParams();
-  const { boards } = useContext(taskContext);
+  const { boards, setBoards, setTasks } = useContext(taskContext);
   return (
     <Drawer
       sx={{
@@ -80,6 +80,7 @@ const SidebarDrawer = () => {
             },
           }}
           onClick={() => {
+            setTasks([]);
             navigate("/dashboard");
             setIsSideBarOpen(false);
           }}
@@ -132,8 +133,9 @@ const SidebarDrawer = () => {
                       : "inherit",
                 }}
                 onClick={() => {
-                  navigate("/" + board.id);
+                  setTasks([]);
                   setCurrentBoard(board);
+                  navigate("/" + board.id);
                 }}
               >
                 {board.boardName}

@@ -31,7 +31,7 @@ import { useNavigate } from "react-router";
 import { globalStateContext } from "../context/GlobalStateContextProvider";
 
 const Dashboard = () => {
-  const { boards, setBoards } = useContext(taskContext);
+  const { boards, setBoards, setTasks } = useContext(taskContext);
   const { user } = useContext(authContext);
   const { setCurrentBoard, mode } = useContext(globalStateContext);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -47,6 +47,7 @@ const Dashboard = () => {
       id: uuid(),
     };
     setBoards((prev) => [...prev, newBoardData]);
+    setIsAddDialogOpen(false);
     try {
       const res = await fetchRequest(CREATE_BOARD, newBoardData);
     } catch (err) {
@@ -54,7 +55,7 @@ const Dashboard = () => {
     }
   }
   return (
-    <Box>
+    <Box sx={{ height: "100%", overflow: "auto", padding: "1rem" }}>
       <Header />
       <Toolbar />
       <Toolbar />
@@ -87,16 +88,21 @@ const Dashboard = () => {
           </IconButton>
         </DialogActions>
       </Dialog>
-      <Box sx={{ width: "100%" }}>
+      <Box
+        sx={{
+          height: "100%",
+        }}
+      >
         <Grid2 container spacing={2} justifyContent={"center"}>
           {boards.map((board) => {
             return (
               <Grid2
                 onClick={() => {
                   navigate("/" + board.id);
+                  setTasks([]);
                   setCurrentBoard(board);
                 }}
-                size={3}
+                size={{ md: 3, sm: 10, xs: 12 }}
                 key={board.id}
               >
                 <Paper

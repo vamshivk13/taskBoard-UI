@@ -167,15 +167,17 @@ const TaskBoard = () => {
       <Header />
       <Box sx={{ display: "flex" }} height={"100%"}>
         <SidebarDrawer isOpen={true} />
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1, width: "100%" }}>
           <BoardHeader />
           <Box
             sx={{
               display: "flex",
-              height: "calc(100% - 120px)",
+              height: "calc(100% - 109px)",
               overflowX: "auto",
+              flex: 1,
               gap: "1rem",
               padding: "1rem",
+              paddingBottom: 0,
             }}
           >
             {/* List of tasks to be rendered */}
