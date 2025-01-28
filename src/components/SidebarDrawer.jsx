@@ -15,7 +15,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { taskContext } from "../context/TaskContextProvider";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 const SidebarDrawer = () => {
   const {
     setIsSideBarOpen,
@@ -44,14 +45,14 @@ const SidebarDrawer = () => {
       <Toolbar></Toolbar>
       <Paper
         sx={{
-          height: "45px",
+          minHeight: "45px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           paddingLeft: "24px",
           paddingRight: "16px",
           backgroundColor:
-            mode == "dark" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)",
+            mode == "dark" ? "rgba(0,0,0,0.1)" : "rgba(152, 152, 152, 0.1)",
           border:
             mode == "dark"
               ? "1px solid rgba(181, 177, 177, 0.1)"
@@ -97,7 +98,9 @@ const SidebarDrawer = () => {
         sx={{
           padding: "8px 1rem",
           backgroundColor:
-            mode == "dark" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)",
+            mode == "dark"
+              ? "rgba(82, 78, 78, 0.1)"
+              : "rgba(152, 152, 152, 0.1)",
           border:
             mode == "dark"
               ? "1px solid rgba(181, 177, 177, 0.1)"
@@ -118,7 +121,7 @@ const SidebarDrawer = () => {
         </IconButton>
       </Paper>
 
-      <List sx={{ overflowY: "scroll", height: "calc(100% - 135px)" }}>
+      <List sx={{ overflowY: "auto", height: "calc(100% - 135px)" }}>
         {boards.map((board) => {
           return (
             <ListItem
@@ -136,6 +139,8 @@ const SidebarDrawer = () => {
                       ? "rgba(255,255,255,0.1)"
                       : "rgba(0,0,0,0.1)"
                     : "inherit",
+                textTransform: "capitalize",
+                gap: "1rem",
               }}
               onClick={() => {
                 setTasks([]);
@@ -143,7 +148,8 @@ const SidebarDrawer = () => {
                 navigate("/" + board.id);
               }}
             >
-              {board.boardName}
+              <ContentPasteIcon fontSize="small" />
+              <Typography>{board.boardName}</Typography>
             </ListItem>
           );
         })}

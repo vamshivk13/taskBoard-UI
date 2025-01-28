@@ -166,7 +166,7 @@ const TaskBoard = () => {
     >
       <Header />
       <Box sx={{ display: "flex" }} height={"100%"}>
-        <SidebarDrawer isOpen={true} />
+        <SidebarDrawer />
         <Box sx={{ flex: 1, width: "100%" }}>
           <BoardHeader />
           <Box

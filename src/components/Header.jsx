@@ -40,8 +40,11 @@ const Header = () => {
     navigate("/login");
   }
   return (
-    <Box sx={{ flexGrow: 1 }} justifyContent={"center"}>
-      <AppBar position="fixed" sx={{ border: "none", zIndex: "200001" }}>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar
+        position="fixed"
+        sx={{ boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px", zIndex: "200001" }}
+      >
         <Toolbar sx={{ zIndex: "2000001" }}>
           <Box
             display={"flex"}
