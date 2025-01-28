@@ -14,6 +14,7 @@ import { globalStateContext } from "../context/GlobalStateContextProvider";
 import AddIcon from "@mui/icons-material/Add";
 import { taskContext } from "../context/TaskContextProvider";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const SidebarDrawer = () => {
   const {
@@ -70,14 +71,16 @@ const SidebarDrawer = () => {
           <ArrowLeftIcon />
         </IconButton>
       </Paper>
-      <List>
+      <List sx={{ height: "45px", padding: 0 }}>
         <ListItem
           sx={{
             cursor: "pointer",
+            height: "100%",
             "&:hover": {
               bgcolor:
                 mode == "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
             },
+            gap: "2rem",
           }}
           onClick={() => {
             setTasks([]);
@@ -85,65 +88,66 @@ const SidebarDrawer = () => {
             setIsSideBarOpen(false);
           }}
         >
-          Boards Dashboard
+          <DashboardIcon />
+          <Typography>Boards Dashboard</Typography>
         </ListItem>
       </List>
-      <Box>
-        <Paper
-          variant="elevation"
-          sx={{
-            padding: "8px 1rem",
-            backgroundColor:
-              mode == "dark" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)",
-            border:
-              mode == "dark"
-                ? "1px solid rgba(181, 177, 177, 0.1)"
-                : "1px solid rgba(0,0,0,0.1)",
-            borderRight: "none",
-            boxShadow: "none",
-            borderRadius: 0,
-            display: "flex",
-            alignItems: "center",
-          }}
+      <Paper
+        variant="elevation"
+        sx={{
+          padding: "8px 1rem",
+          backgroundColor:
+            mode == "dark" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)",
+          border:
+            mode == "dark"
+              ? "1px solid rgba(181, 177, 177, 0.1)"
+              : "1px solid rgba(0,0,0,0.1)",
+          borderRight: "none",
+          boxShadow: "none",
+          borderRadius: 0,
+          display: "flex",
+          alignItems: "center",
+          height: "45px",
+        }}
+      >
+        <Typography>Your Boards</Typography>
+        <IconButton
+          sx={{ padding: 0, marginLeft: "auto", borderRadius: "2px" }}
         >
-          <Typography>Your Boards</Typography>
-          <IconButton
-            sx={{ padding: 0, marginLeft: "auto", borderRadius: "2px" }}
-          >
-            <AddIcon />
-          </IconButton>
-        </Paper>
-        <List>
-          {boards.map((board) => {
-            return (
-              <ListItem
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    bgcolor:
-                      mode == "dark"
-                        ? "rgba(255,255,255,0.1)"
-                        : "rgba(0,0,0,0.1)",
-                  },
+          <AddIcon />
+        </IconButton>
+      </Paper>
+
+      <List sx={{ overflowY: "scroll", height: "calc(100% - 135px)" }}>
+        {boards.map((board) => {
+          return (
+            <ListItem
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
                   bgcolor:
-                    board.id == params.boardId
-                      ? mode == "dark"
-                        ? "rgba(255,255,255,0.1)"
-                        : "rgba(0,0,0,0.1)"
-                      : "inherit",
-                }}
-                onClick={() => {
-                  setTasks([]);
-                  setCurrentBoard(board);
-                  navigate("/" + board.id);
-                }}
-              >
-                {board.boardName}
-              </ListItem>
-            );
-          })}
-        </List>
-      </Box>
+                    mode == "dark"
+                      ? "rgba(255,255,255,0.1)"
+                      : "rgba(0,0,0,0.1)",
+                },
+                bgcolor:
+                  board.id == params.boardId
+                    ? mode == "dark"
+                      ? "rgba(255,255,255,0.1)"
+                      : "rgba(0,0,0,0.1)"
+                    : "inherit",
+              }}
+              onClick={() => {
+                setTasks([]);
+                setCurrentBoard(board);
+                navigate("/" + board.id);
+              }}
+            >
+              {board.boardName}
+            </ListItem>
+          );
+        })}
+      </List>
     </Drawer>
   );
 };

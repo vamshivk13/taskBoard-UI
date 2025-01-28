@@ -48,6 +48,7 @@ const Dashboard = () => {
     };
     setBoards((prev) => [...prev, newBoardData]);
     setIsAddDialogOpen(false);
+    setBoardName("");
     try {
       const res = await fetchRequest(CREATE_BOARD, newBoardData);
     } catch (err) {
@@ -58,11 +59,14 @@ const Dashboard = () => {
     <Box sx={{ height: "100%", overflow: "auto", padding: "1rem" }}>
       <Header />
       <Toolbar />
-      <Toolbar />
+
       <Dialog
         fullWidth
         open={isAddDialogOpen}
-        onClose={() => setIsAddDialogOpen(false)}
+        onClose={() => {
+          setIsAddDialogOpen(false);
+          setBoardName("");
+        }}
       >
         <DialogTitle title="Add New Board">Add New Board</DialogTitle>
         <DialogContent>
@@ -80,7 +84,7 @@ const Dashboard = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <IconButton>
+          <IconButton onClick={() => setIsAddDialogOpen(false)}>
             <CloseIcon />
           </IconButton>
           <IconButton onClick={handleNewBoard}>
@@ -93,7 +97,16 @@ const Dashboard = () => {
           height: "100%",
         }}
       >
-        <Grid2 container spacing={2} justifyContent={"center"}>
+        <Grid2
+          container
+          spacing={2}
+          sx={{
+            justifyContent: {
+              xs: "center",
+              md: "start",
+            },
+          }}
+        >
           {boards.map((board) => {
             return (
               <Grid2
