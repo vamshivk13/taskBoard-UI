@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -111,6 +112,40 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
     }
   }
 
+  async function handleMarkAsDone() {
+    setTasks((tasksList) => {
+      return tasksList.map((curTaskList) => {
+        if (curTaskList.tasksListId == tasksListId) {
+          const updatedTasks = curTaskList.tasks.map((curTask) => {
+            if (curTask.id == task.id) {
+              return {
+                ...curTask,
+                isDone: !curTask?.isDone,
+              };
+            } else {
+              return curTask;
+            }
+          });
+          return { ...curTaskList, tasks: [...updatedTasks] };
+        } else {
+          return curTaskList;
+        }
+      });
+    });
+
+    try {
+      fetchRequest(UPDATE_TASK, {
+        tasksListId: tasksListId,
+        task: { ...task, isDone: !task?.isDone },
+      });
+    } catch (err) {
+      // handleError({
+      //   title: "Unable to update your tasks",
+      //   message: err.response.data,
+      // });
+      console.log("Error updating the task", err);
+    }
+  }
   return (
     <Dialog
       fullWidth
@@ -136,8 +171,7 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
           <TextField
             sx={{
               boxSizing: "border-box",
-              padding: 0,
-              letterSpacing: "0",
+
               "&:focus-within .MuiOutlinedInput-notchedOutline": {
                 border:
                   mode == "dark"
@@ -145,6 +179,17 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
                     : "1px solid rgba(2, 1, 1, 0.9)",
               },
               "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+              "& .MuiOutlinedInput-input": {
+                fontSize: "1.5rem",
+                padding: "7px",
+              },
+              "&:focus-within .MuiOutlinedInput-input": {
+                padding: "7px 10px",
+                bgcolor:
+                  mode == "dark"
+                    ? "rgba(29, 28, 28, 0.9)"
+                    : "rgba(217, 213, 213, 0.9)",
+              },
             }}
             fullWidth
             autoFocus
@@ -153,9 +198,6 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
             onChange={(e) => {
               setUpdatedValue(e.target.value);
             }}
-            // onBlur={() => {
-            //   handleUpdateTask("edit");
-            // }}
           ></TextField>
         </Box>
       </DialogTitle>
@@ -164,14 +206,19 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
           sx={{
             boxSizing: "border-box",
             padding: 0,
-
             letterSpacing: "0",
-            "& .MuiOutlinedInput-notchedOutline": {
+            "&:focus-within .MuiOutlinedInput-notchedOutline": {
               border:
                 mode == "dark"
                   ? "1px solid rgba(210, 205, 205, 0.9)"
                   : "1px solid rgba(2, 1, 1, 0.9)",
-              outline: "none",
+            },
+            background:
+              mode == "dark"
+                ? "rgba(29, 28, 28, 0.9)"
+                : "rgba(217, 213, 213, 0.9)",
+            ".MuiOutlinedInput-notchedOutline": {
+              border: "none",
             },
           }}
           fullWidth
@@ -182,29 +229,38 @@ const TaskActionDialog = ({ taskId, isOpen, handleClose, tasksListId }) => {
           onChange={(e) => {
             setUpdatedNotes(e.target.value);
           }}
-          // onBlur={() => {
-          //   handleUpdateTask("edit");
-          // }}
         ></TextField>
       </DialogContent>
       <DialogActions>
-        <IconButton
+        <Button
+          onClick={handleMarkAsDone}
+          variant="contained"
+          color={task?.isDone ? "info" : "success"}
+        >
+          {task?.isDone ? "Mark as Todo" : "Mark as Done"}
+        </Button>
+        <Button
+          variant="contained"
+          color="warning"
           onClick={() => {
             handleUpdateTask("delete");
             handleClose();
           }}
+          startIcon={<DeleteOutlineIcon />}
         >
-          <DeleteOutlineIcon />
-        </IconButton>
-        <IconButton
+          Remove
+        </Button>
+        <Button
+          variant="contained"
           type="submit"
           onClick={() => {
             handleUpdateTask("edit");
             handleClose();
           }}
+          startIcon={<DoneIcon />}
         >
-          <DoneIcon />
-        </IconButton>
+          Done
+        </Button>
       </DialogActions>
     </Dialog>
   );
