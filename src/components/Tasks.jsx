@@ -184,7 +184,7 @@ const Tasks = ({ tasks, tasksListId }) => {
                                 handleSelectedTask(task.id);
                               }}
                               sx={{
-                                marginBottom: "10px",
+                                marginBottom: "0",
                                 background:
                                   mode == "light" ? "#e9e9e6" : "#3e3e3e",
                                 boxShadow: "0px 2px 3px rgba(0, 0, 0, 0.1)",
