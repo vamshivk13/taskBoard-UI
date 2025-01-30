@@ -46,6 +46,8 @@ const TaskBoard = () => {
         boardId: boardId,
       });
       console.log("LIST BY BOARD", lists.data);
+      const curBoard = boards.find((board) => board.id == boardId);
+      setCurrentBoard(curBoard);
       setTasks(lists.data);
     } catch (err) {
       handleError({
