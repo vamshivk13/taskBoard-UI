@@ -79,9 +79,9 @@ const Tasks = ({ tasks, tasksListId }) => {
                   return (
                     <div key={task.id}>
                       <Draggable
-                        key={task.id}
+                        key={task.order}
                         draggableId={task.id}
-                        index={index}
+                        index={task.order}
                       >
                         {(provided) => (
                           <div
@@ -163,9 +163,9 @@ const Tasks = ({ tasks, tasksListId }) => {
                   return (
                     <div key={task.id}>
                       <Draggable
-                        key={task.id}
+                        key={task.order}
                         draggableId={task.id}
-                        index={index}
+                        index={task.order}
                       >
                         {(provided) => (
                           <div

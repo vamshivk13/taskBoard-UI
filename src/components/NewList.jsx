@@ -13,7 +13,7 @@ import { useParams } from "react-router";
 const NewList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [listName, setListName] = useState("");
-  const { setTasks } = useContext(taskContext);
+  const { setTasks, tasks } = useContext(taskContext);
   const { user } = useContext(authContext);
   const params = useParams();
   const { handleError, ErrorModal } = useErrorBoundary();

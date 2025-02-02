@@ -79,15 +79,36 @@ const TaskBoard = () => {
     const { source, destination } = result;
 
     if (source.droppableId === destination.droppableId) {
-      console.log("DRAG AND DROP IN ACTION");
+      console.log("DRAG AND DROP IN ACTION", source, destination);
       let updatedTasksList = null;
       setTasks((tasksList) => {
         return tasksList.map((curTaskList) => {
           if (curTaskList.tasksListId == destination.droppableId) {
-            const curTasks = curTaskList.tasks;
-            const [entryToBeReOrdered] = curTasks.splice(source.index, 1);
-            curTasks.splice(destination.index, 0, entryToBeReOrdered);
+            let curTasks = curTaskList.tasks;
+            const sourceIndex = curTasks.findIndex(
+              (task) => task.order == source.index
+            );
+            const destinationIndex = curTasks.findIndex(
+              (task) => task.order == destination.index
+            );
+            console.log("INDEXes", sourceIndex, destinationIndex);
+            const [entryToBeReOrdered] = curTasks.splice(sourceIndex, 1);
+            const curTodoTasks = curTasks.filter((task) => !task.isDone).length;
+            let isDone = true;
+            if (destinationIndex >= 0 && destinationIndex <= curTodoTasks) {
+              isDone = false;
+            }
+            curTasks.splice(destinationIndex, 0, {
+              ...entryToBeReOrdered,
+              isDone,
+            });
+            curTasks = curTasks.map((task, index) => ({
+              ...task,
+              order: index,
+            }));
+
             updatedTasksList = [...curTasks];
+            console.log("UPDATED LIST", updatedTasksList);
             return {
               ...curTaskList,
               tasks: [...curTasks],
@@ -118,18 +139,31 @@ const TaskBoard = () => {
       setTasks((tasksList) => {
         return tasksList.map((curTaskList) => {
           if (curTaskList.tasksListId == source.droppableId) {
-            const curTasks = [...curTaskList.tasks];
+            let curTasks = [...curTaskList.tasks];
             curTasks.splice(source.index, 1);
+            curTasks = curTasks.map((task, index) => ({
+              ...task,
+              order: index,
+            }));
             return {
               ...curTaskList,
               tasks: [...curTasks],
             };
           } else if (curTaskList.tasksListId == destination.droppableId) {
-            const curTasks = [...curTaskList.tasks];
-            curTasks.splice(destination.index, 0, toBeRemoved);
+            let curTasks = [...curTaskList.tasks];
+            const curTodoTasks = curTasks.filter((task) => !task.isDone).length;
+            let isDone = true;
+            if (destination.index >= 0 && destination.index <= curTodoTasks) {
+              isDone = false;
+            }
+            curTasks.splice(destination.index, 0, { ...toBeRemoved, isDone });
+            curTasks = curTasks.map((task, index) => ({
+              ...task,
+              order: index,
+            }));
             fetchRequest(DELETE_TASK_URL, {
               tasksListId: source.droppableId,
-              task: toBeRemoved,
+              task: { ...toBeRemoved, isDone },
             }).then((res) => {
               fetchRequest(LIST_ALLTASKS_UPDATE_URL, {
                 tasksListId: destination.droppableId,

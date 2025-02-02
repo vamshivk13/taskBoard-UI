@@ -42,6 +42,7 @@ const BoardList = ({ task }) => {
       createdAt: Date.now(),
       note: "",
       id: id,
+      order: task.tasks?.length || 0,
     };
     setTasks((tasks) => {
       return tasks.map((curTaskList) => {
