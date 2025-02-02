@@ -50,7 +50,9 @@ const Header = () => {
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
+            sx={{ cursor: "pointer" }}
             gap={"3px"}
+            onClick={() => navigate("/dashboard")}
           >
             <SpaceDashboardIcon />
             <Typography variant="h6">TaskBoard</Typography>
