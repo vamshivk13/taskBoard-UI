@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./routes/Login";
 import TaskBoard from "./routes/TaskBoard";
 import Cookies from "js-cookie";
@@ -17,6 +21,7 @@ import fetchRequest from "./api/api";
 import { GET_BOARDS, USER_AUTH_TOKEN_URL } from "./constants/api";
 import { authContext } from "./context/AuthContextProvider";
 import { taskContext } from "./context/TaskContextProvider";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const { setIsAuthenticated, setUser, user, isAuthenticated } =
@@ -24,14 +29,23 @@ function App() {
   const { mode, setCurrentBoard, setIsInitialLoadingDone } =
     useContext(globalStateContext);
   const { setBoards } = useContext(taskContext);
+  // const navigate = useNavigate();
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <TaskBoard />,
+      element: (
+        <ProtectedRoute>
+          <TaskBoard />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/:boardId",
-      element: <TaskBoard />,
+      element: (
+        <ProtectedRoute>
+          <TaskBoard />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "login",
@@ -39,7 +53,11 @@ function App() {
     },
     {
       path: "dashboard",
-      element: <Dashboard />,
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      ),
     },
   ]);
 
@@ -66,46 +84,44 @@ function App() {
   }
   useEffect(() => {
     setIsInitialLoadingDone(false);
-    async function authenticateViaCustomLoginToken(token, config = {}) {
-      try {
-        const user = await fetchRequest(
-          USER_AUTH_TOKEN_URL,
-          {
-            token: token,
-          },
-          "POST",
-          { ...config }
-        );
-        console.log("TOKEN AUTH RESPONSE", user);
-        if (user) return user.data;
-        else return null;
-      } catch (err) {
-        console.log("Token Authentication Error", err);
-      }
-    }
+    // async function authenticateViaCustomLoginToken(token, config = {}) {
+    //   try {
+    //     const user = await fetchRequest(
+    //       USER_AUTH_TOKEN_URL,
+    //       {
+    //         token: token,
+    //       },
+    //       "POST",
+    //       { ...config }
+    //     );
+    //     console.log("TOKEN AUTH RESPONSE", user);
+    //     if (user) return user.data;
+    //     else return null;
+    //   } catch (err) {
+    //     console.log("Token Authentication Error", err);
+    //   }
+    // }
 
-    async function authenticateUser() {
-      const authToken = Cookies.get("token");
-      const googleToken = Cookies.get("google-token");
-      console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
-      const googleUser = await authenticateViaCustomLoginToken(googleToken);
-      const user = await authenticateViaCustomLoginToken(authToken, {
-        withCredentials: true,
-      });
-      if (user) {
-        setIsAuthenticated(true);
-        setUser(user);
-      } else if (googleUser) {
-        setIsAuthenticated(true);
-        setUser(googleUser);
-      } else {
-        navigate("/login");
-      }
-    }
-    if (!isAuthenticated) authenticateUser();
-    else {
-      fetchBoardsByUser(user.userId);
-    }
+    // async function authenticateUser() {
+    //   const authToken = Cookies.get("token");
+    //   const googleToken = Cookies.get("google-token");
+    //   console.log("AUTH, GOOGLE TOKENS", authToken, googleToken);
+    //   const googleUser = await authenticateViaCustomLoginToken(googleToken, {
+    //     withCredentials: true,
+    //   });
+    //   const user = await authenticateViaCustomLoginToken(authToken);
+    //   console.log("AUTH-USER_GOOGLE", user, googleUser, isAuthenticated);
+    //   if (user) {
+    //     setIsAuthenticated(true);
+    //     setUser(user);
+    //   } else if (googleUser) {
+    //     setIsAuthenticated(true);
+    //     setUser(googleUser);
+    //   } else {
+    //     navigate("/login");
+    //   }
+    // }
+    if (isAuthenticated) fetchBoardsByUser(user.userId);
   }, [isAuthenticated]);
 
   const theme = createTheme({
